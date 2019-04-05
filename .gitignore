@@ -1,2 +1,5 @@
-# As abranknere mi chetsener
+# As abranknere mi tsker
 *.txt
+
+# As abranknere tske
+!requirements.txt
