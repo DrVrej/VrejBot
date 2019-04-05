@@ -1,0 +1,1 @@
+worker: python vrejgaming_bot.py
