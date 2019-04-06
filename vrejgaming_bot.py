@@ -9,7 +9,7 @@ non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
 # https://discordpy.readthedocs.io/en/rewrite/api.html
 
 @bot.event
-async def on_member_join(member)
+async def on_member_join(member):
 	print(member)
 	print(member.id)
 	for channel in member.server.channels:
