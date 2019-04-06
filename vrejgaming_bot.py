@@ -73,4 +73,4 @@ def vj_Match_Any(item,a):
 
 kakhni_tive = S3Connection(os.environ['KAKHNI_TIVE']) #open("kakhni_tive.txt", "r"
 print(kakhni_tive)
-client.run(kakhni_tive.readline())
+#client.run(kakhni_tive.readline())
