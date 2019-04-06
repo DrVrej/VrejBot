@@ -10,11 +10,11 @@ non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
 
 @bot.event
 async def on_member_join(member):
-	print(member)
-	print(member.id)
-	for channel in member.server.channels:
+	#print(member.avatar_url)
+	#print(member.color)
+	for channel in member.guild.channels:
 		if str(channel) == "bot-log":
-			await channel.send("```Member status: " + str(member.status))
+			await channel.send(":inbox_tray: MEMBER JOINED [" + str(member.joined_at) + "]```Name: " + str(member) + " [ID: " + str(member.id) + "] \nstatus: " + str(member.status) + "\n Account Created: " + str(member.created_at) + "\nOn Mobile: " + str(member.is_on_mobile()) + "\nHighest Rank: " + str(member.top_role) + "```")
 
 @bot.event
 async def on_message(message):
@@ -28,7 +28,7 @@ async def on_message(message):
         m = m.replace("<@" + str(v.id) + ">","").strip() # serpe martigneroon anoonere
     if botTagged == False:
         return
-    
+
     print("-----------------------------")
     print("Author: " + str(message.author))
     
@@ -73,5 +73,10 @@ def vj_Match_Any(item,a):
             return True
     return False
 
-#kakhni_tive = #open("kakhni_tive.txt", "r")
-bot.run(os.environ["KAKHNI_TIVE"])
+kakhni_tive = None
+try:
+   os.environ["KAKHNI_TIVE"]
+   kakhni_tive = os.environ["KAKHNI_TIVE"]
+except KeyError:
+   kakhni_tive = open("kakhni_tive.txt", "r").readline()
+bot.run(kakhni_tive)
