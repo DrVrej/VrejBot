@@ -1,6 +1,7 @@
 import discord
 import sys
 from random import randint
+from boto.s3.connection import S3Connection
 
 client = discord.Client()
 non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
@@ -69,5 +70,6 @@ def vj_Match_Any(item,a):
             return True
     return False
 
-kakhni_tive = open("kakhni_tive.txt", "r")
+kakhni_tive = S3Connection(os.environ['KAKHNI_TIVE']) #open("kakhni_tive.txt", "r"
+print(kakhni_tive)
 client.run(kakhni_tive.readline())
