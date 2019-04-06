@@ -2,7 +2,6 @@ import discord
 import sys
 import os
 from random import randint
-from boto.s3.connection import S3Connection
 
 client = discord.Client()
 non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
@@ -44,7 +43,7 @@ async def on_message(message):
     
     # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     
-    if vj_Match_Start(m,hello_a) == True: await message.channel.send(hello[randint(0,len(hello)-1)]); return
+    if vj_Match_Start(m,hello_a) == True: await message.channel.send(vj_PickRandom(hello)); return
     if vj_Match_Start(m,good_a) == True: await message.channel.send(good[randint(0,len(good)-1)]); return
     
     if vj_Match_Any(m,["cookie"]) == True: await message.channel.send(":cookie:"); return
@@ -71,6 +70,5 @@ def vj_Match_Any(item,a):
             return True
     return False
 
-#kakhni_tive = os.environ['KAKHNI_TIVE'] #open("kakhni_tive.txt", "r"
-#print(kakhni_tive)
-client.run(os.environ['KAKHNI_TIVE'])
+#kakhni_tive = #open("kakhni_tive.txt", "r")
+client.run(os.environ["KAKHNI_TIVE"])
