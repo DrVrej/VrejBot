@@ -14,7 +14,7 @@ async def on_member_join(member):
 	#print(member.color)
 	for channel in member.guild.channels:
 		if str(channel) == "bot-log":
-			await channel.send(":inbox_tray: **MEMBER JOINED** [*" + str(member.joined_at) + "*]```Name: " + str(member) + " [ID: " + str(member.id) + "]\nStatus: " + str(member.status) + "\nAccount Created: " + str(member.created_at) + "\nOn Mobile: " + str(member.is_on_mobile()) + "\nHighest Rank: " + str(member.top_role) + "```")
+			await channel.send(":inbox_tray: **MEMBER JOINED** [*" + str(member.joined_at) + "*]```:bust_in_silhouette: Name: " + str(member) + " [ID: " + str(member.id) + "]\n:tools: Account Created: " + str(member.created_at) + "\n:iphone: On Mobile: " + str(member.is_on_mobile()) + "\n:trophy: Highest Rank: " + str(member.top_role) + "```")
 
 @bot.event
 async def on_message(message):
