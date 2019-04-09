@@ -31,6 +31,7 @@ async def on_message(message):
 
     print("-----------------------------")
     print("Author: " + str(message.author))
+    print(m)
     
     try:
         print("Message Arrived: " + m) # Make sure it's a unreconginzed letter
