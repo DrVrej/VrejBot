@@ -33,11 +33,11 @@ async def on_message(message):
     print("Author: " + str(message.author))
     
     try:
-        print("Message Arrived: " + m) # Make sure it's a unreconginzed letter
+        print("Message Arrived: " + m) # Make sure it's a unrecognized letter
         m = m.lower()
     except UnicodeEncodeError:
         m = m.translate(non_bmp_map)
-        print("unreconginzed Message Arrived: " + m)
+        print("unrecognized Message Arrived: " + m)
 
     # Yete yes em, mi sharnager!
     if message.author == bot.user: return
@@ -53,12 +53,12 @@ async def on_message(message):
     
     if vj_Match_Any(m,["<:hl3:562737648926457893>", "hl3", "half life 3"]) == True: await vj_PrintMessage(vj_PickRandom(["In your dreams you will see <:hl3:562737648926457893>!", "Release date: December 29, 9999", "Never. :eye:"])); return
     if vj_Match_Any(m,["cookie", "$cookkie"]) == True: await vj_PrintMessage(":cookie:"); return
-    if vj_Match_Any(m,["armenia", "hayastan", "armo", "🇦🇲"]) == True: await vj_PrintMessage(":flag_am:"); return
+    if vj_Match_Any(m,["armenia", "hayastan", "armo", "🇦🇲"]) == True: await vj_PrintMessage("Long Live Armenia! :flag_am:"); return
     if vj_Match_Any(m,["gay"]) == True: await vj_PrintMessage(":rainbow_flag:"); return
     if vj_Match_Any(m,["😃"]) == True: await vj_PrintMessage("😃"); return
 
-    # Yete pame chi hasgena:
-    await vj_PrintMessage("I don't recognize your message! Sorry :frowning:")
+    # Yete pame chi hasgena:      "I don't recognize your message! Sorry :frowning:"
+    await vj_PrintMessage(vj_PickRandom(["Yes you are!", "No you!", "Tell me more!", "Okay?"]))
 
 def vj_PickRandom(tbl):
     if isinstance(tbl, list):
