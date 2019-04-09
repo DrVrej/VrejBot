@@ -31,7 +31,6 @@ async def on_message(message):
 
     print("-----------------------------")
     print("Author: " + str(message.author))
-    print(m)
     
     try:
         print("Message Arrived: " + m) # Make sure it's a unreconginzed letter
@@ -46,13 +45,15 @@ async def on_message(message):
     if m == "": await message.channel.send("You didn't type anything! :thinking: :angry:"); return
     
     # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    
+	
     if vj_Match_Start(m,["hello", "hi", "greetings", "allo"]) == True: await message.channel.send(vj_PickRandom(["Hello!", "Hi!", "Greetings!", "Allo!"])); return
     if vj_Match_Start(m,["how are you", "how you doing", "are you good"]) == True: await message.channel.send(vj_PickRandom(["I am good! You?", "I am doing great! how about you?", "Good, you?"])); return
     
+    if vj_Match_Any(m,["<:hl3:562737648926457893>", "hl3", "half life 3"]) == True: await message.channel.send(vj_PickRandom(["In your dreams you will see <:hl3:562737648926457893>!", "Release date: December 29, 9999", "Never. :eye:"])); return
     if vj_Match_Any(m,["cookie", "$cookkie"]) == True: await message.channel.send(":cookie:"); return
-    if vj_Match_Any(m,["armenia", "hayastan", "armo"]) == True: await message.channel.send(":flag_am:"); return
+    if vj_Match_Any(m,["armenia", "hayastan", "armo", "🇦🇲"]) == True: await message.channel.send(":flag_am:"); return
     if vj_Match_Any(m,["gay"]) == True: await message.channel.send(":rainbow_flag:"); return
+    if vj_Match_Any(m,["😃"]) == True: await message.channel.send("😃"); return
 
     # Yete pame chi hasgena:
     await message.channel.send("I don't recognize your message! Sorry :frowning:")
