@@ -58,7 +58,7 @@ async def on_message(message):
     if vj_Match_Any(m,["😃"]) == True: await vj_PrintMessage("😃"); return
 
     # Yete pame chi hasgena:
-    await message.channel.send("I don't recognize your message! Sorry :frowning:")
+    await vj_PrintMessage("I don't recognize your message! Sorry :frowning:")
 
 def vj_PickRandom(tbl):
     if isinstance(tbl, list):
