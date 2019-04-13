@@ -22,6 +22,19 @@ async def on_message(message):
     m_org = message.content # Original message
     m = m_org # The one that will be edited
     botTagged = False # Yete robot-e, tag yegher e, sharnage
+    
+    # Oknagan hramaner:
+    mh = m_org.strip() # Asiga minag hramaneroun hamar bidi kordzadzvi!
+    for v in message.mentions: # Nayir amen martignere vor tag yegher en
+        mh = mh.replace("<@" + str(v.id) + ">","").strip() # serpe martigneroon anoonere
+    if vj_Match_Exact(mh,["-help"]) == True: await message.channel.send("```ini\n[-sg | -steam] = Steam Group\n[-i | -invite] = Discord Server\n[-vjbase | -vjb | -vj] = VJ Base Workshop Page\n[-vjof | -vjunof | -vjcol | -vjcollection] = VJ Base Official and Unofficial Addons\n[-server | -sfiles] = DrVrej's Server Files\n[-im] = Broken / Incompatible Addons\n```"); return
+    if vj_Match_Exact(mh,["-sg", "-steam"]) == True: await message.channel.send("Steam Group: https://steamcommunity.com/groups/vrejgaming"); return
+    if vj_Match_Exact(mh,["-i", "-invite"]) == True: await message.channel.send("Discord Invite: https://discordapp.com/invite/zwQjrdG"); return
+    if vj_Match_Exact(mh,["-vjbase", "-vjb", "-vj"]) == True: await message.channel.send("VJ Base Workshop Page: https://steamcommunity.com/sharedfiles/filedetails/?id=131759821"); return
+    if vj_Match_Exact(mh,["-vjof", "-vjunof", "-vjcol", "-vjcollection"]) == True: await message.channel.send("VJ Base Official and Unofficial Addons: https://steamcommunity.com/sharedfiles/filedetails/?id=1080924955"); return
+    if vj_Match_Exact(mh,["-server", "-sfiles"]) == True: await message.channel.send("DrVrej's Server Files: https://steamcommunity.com/sharedfiles/filedetails/?id=157267702"); return
+    if vj_Match_Exact(mh,["-im"]) == True: await message.channel.send("Broken / Incompatible Addons: https://steamcommunity.com/sharedfiles/filedetails/?id=1129493108"); return
+    
     for v in message.mentions: # Nayir amen martignere vor tag yegher en
         if v == bot.user: # Yete robotne, gerna sharnagel
             botTagged = True
@@ -68,6 +81,12 @@ def vj_PickRandom(tbl):
     if isinstance(tbl, list):
         return tbl[randint(0,len(tbl)-1)]
     return tbl
+
+def vj_Match_Exact(item,a):
+    for v in a:
+        if item == v:
+            return True
+    return False
 
 def vj_Match_Start(item,a):
     for v in a:
