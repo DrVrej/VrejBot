@@ -64,6 +64,7 @@ async def on_message(message):
     if vj_Match_Start(m,["hello", "hi", "greetings", "allo"]) == True: await vj_PrintMessage(vj_PickRandom(["Hello!", "Hi!", "Greetings!", "Allo!"])); return
     if vj_Match_Start(m,["how are you", "how you doing", "are you good"]) == True: await vj_PrintMessage(vj_PickRandom(["I am good! You?", "I am doing great! how about you?", "Good, you?"])); return
     if vj_Match_Start(m,["are you a bot", "you are a bot", "you a bot"]) == True: await vj_PrintMessage(vj_PickRandom(["I am a bot!", "I know I am a bot!", " I am robot!", "BEEP BOOP BEEP BOOP"])); return
+    if vj_Match_Start(m,["talk to hgrunt"]) == True: await vj_PrintMessage(vj_PickRandom(["<@396884008501510144> Hello!"])); return
     
     if vj_Match_Any(m,["who created you", "your owner", "your creator", "your author", "your dad", "your parents", "your father"]) == True: await vj_PrintMessage("DrVrej created me!"); return
     if vj_Match_Any(m,["your mother", "your mom", "who is your mom"]) == True: await vj_PrintMessage("I don't have a mother!"); return
@@ -75,7 +76,7 @@ async def on_message(message):
     if vj_Match_Any(m,["i am happy", u"\U0001F600", u"\U0001F603", u"\U0001F604", u"\U0001F601", u"\U000FE332", u"\U0001F60A", u"\U0001F642", u"\u263A", u"\U0001F607", u"\U0001F643"]) == True: await vj_PrintMessage(vj_PickRandom([u"\U0001F600", u"\U0001F603", u"\U0001F604", u"\U0001F601", u"\U000FE332", u"\U0001F60A", u"\U0001F642", u"\U000FE336", u"\U0001F607", u"\U0001F643"])); return
 
     # Yete pame chi hasgena:      "I don't recognize your message! Sorry :frowning:"
-    await vj_PrintMessage(vj_PickRandom(["Yes you are!", "No you!", "Tell me more!", "Okay?", "Cool story!", "Understandable, have a nice day!", "You wot m8?!", "I was in the chest club.", "If you say so!", "I like trains."]))
+    await vj_PrintMessage(vj_PickRandom(["Yes you are!", "No you!", "Tell me more!", "Okay?", "Cool story!", "Understandable, have a nice day!", "You wot m8?!", "I was in the chest club.", "If you say so!", "I like trains.", "If you say so...", "I agree.", "I disagree."]))
 
 def vj_PickRandom(tbl):
     if isinstance(tbl, list):
