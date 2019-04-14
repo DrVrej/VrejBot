@@ -64,7 +64,7 @@ async def on_message(message):
     if vj_Match_Start(m,["hello", "hi", "greetings", "allo"]) == True: await vj_PrintMessage(vj_PickRandom(["Hello!", "Hi!", "Greetings!", "Allo!"])); return
     if vj_Match_Start(m,["how are you", "how you doing", "are you good"]) == True: await vj_PrintMessage(vj_PickRandom(["I am good! You?", "I am doing great! how about you?", "Good, you?"])); return
     if vj_Match_Start(m,["are you a bot", "you are a bot", "you a bot"]) == True: await vj_PrintMessage(vj_PickRandom(["I am a bot!", "I know I am a bot!", " I am robot!", "BEEP BOOP BEEP BOOP"])); return
-    if vj_Match_Start(m,["talk to hgrunt"]) == True: await vj_PrintMessage(vj_PickRandom(["<@396884008501510144> Hello!"])); return
+    if vj_Match_Start(m,["talk to hgrunt"]) == True: await message.channel.send(vj_PickRandom(["<@396884008501510144> Hello!"])); return
     
     if vj_Match_Any(m,["who created you", "your owner", "your creator", "your author", "your dad", "your parents", "your father"]) == True: await vj_PrintMessage("DrVrej created me!"); return
     if vj_Match_Any(m,["your mother", "your mom", "who is your mom"]) == True: await vj_PrintMessage("I don't have a mother!"); return
