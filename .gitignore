@@ -1,5 +1,6 @@
 # As abranknere mi tsker
 *.txt
+__pycache__/
 
 # As abranknere tske
 !requirements.txt
