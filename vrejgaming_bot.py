@@ -12,17 +12,18 @@ non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
 
 @bot.event
 async def on_member_join(member):
-	#print(member.avatar_url)
-	#print(member.color)
-	for channel in member.guild.channels:
-		if str(channel) == "bot-log":
-			await channel.send(":inbox_tray: **MEMBER JOINED** [*" + str(member.joined_at) + "*]\n:busts_in_silhouette: `Name: " + str(member) + " [ID: " + str(member.id) + "]`\n:tools: `Account Created: " + str(member.created_at) + "`\n:iphone: `On Mobile: " + str(member.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(member.top_role) + "`")
+    #print(member.avatar_url)
+    #print(member.color)
+    for channel in member.guild.channels:
+        if str(channel) == "bot-log":
+            await channel.send(":inbox_tray: **MEMBER JOINED** [*" + vjf.Format_Time(member.joined_at) + "*]\n:busts_in_silhouette: `Name: " + str(member) + " [ID: " + str(member.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(member.created_at) + "`\n:iphone: `On Mobile: " + str(member.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(member.top_role) + "`")
 
+@bot.event
 async def on_member_remove(member):
-	for channel in member.guild.channels:
-		if str(channel) == "bot-log":
-			await channel.send(":outbox_tray: **MEMBER JOINED** [*" + str(member.joined_at) + "*]\n:busts_in_silhouette: `Name: " + str(member) + " [ID: " + str(member.id) + "]`\n:tools: `Account Created: " + str(member.created_at) + "`\n:iphone: `On Mobile: " + str(member.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(member.top_role) + "`")
-            
+    for channel in member.guild.channels:
+        if str(channel) == "bot-log":
+            await channel.send(":outbox_tray: **MEMBER LEFT** [*" + vjf.Format_Time(datetime.datetime.now()) + "*]\n:busts_in_silhouette: `Name: " + str(member) + " [ID: " + str(member.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(member.created_at) + "`\n:iphone: `On Mobile: " + str(member.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(member.top_role) + "`\n:inbox_tray:`Join Date: " + vjf.Format_Time(member.joined_at) + "`")
+
 @bot.event
 async def on_message(message):
     # Sharnag e, minag yete as bot-e tag yegher e!
