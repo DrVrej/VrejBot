@@ -24,11 +24,11 @@ async def on_member_remove(member):
         if str(channel) == "bot-log":
             await channel.send(":outbox_tray: **MEMBER LEFT** [*" + vjf.Format_Time(datetime.datetime.now()) + "*]\n:busts_in_silhouette: `Name: " + str(member) + " [ID: " + str(member.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(member.created_at) + "`\n:iphone: `On Mobile: " + str(member.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(member.top_role) + "`\n:inbox_tray:`Join Date: " + vjf.Format_Time(member.joined_at) + "`")
 
-@bot.event
-async def on_member_update(before, after):
-    # before – The Member that updated their profile with the old info. ||| after – The Member that updated their profile with the updated info.
-    print("Member update test!")
-    for channel in member.guild.channels:
+#@bot.event
+#async def on_member_update(before, after):
+#    # before – The Member that updated their profile with the old info. ||| after – The Member that updated their profile with the updated info.
+#    print("Member update test!")
+#    for channel in member.guild.channels:
 
 @bot.event
 async def on_message(message):
