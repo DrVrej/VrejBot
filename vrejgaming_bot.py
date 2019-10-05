@@ -35,7 +35,7 @@ async def on_message(message):
     # Sharnag e, minag yete as bot-e tag yegher e!
     m_org = message.content # Original message
     m = m_org # The one that will be edited
-    botTagged = False # Yete robot-e, tag yegher e, sharnage
+    botTagged = False # Yete robote, tag yegher e, sharnage
     isAdmin = vjf.IsAdmin(message.author) # Nayir yete medzavor e
     getUserInfo = False # Amen tag yeghadz martigneroun masin hamar ge ker e
     
@@ -52,20 +52,21 @@ async def on_message(message):
     if vjf.Match_Exact(mh,["-server", "-sfiles"]) == True: await message.channel.send("DrVrej's Server Files: https://steamcommunity.com/sharedfiles/filedetails/?id=157267702"); return
     if vjf.Match_Exact(mh,["-im"]) == True: await message.channel.send("Broken / Incompatible Addons: https://steamcommunity.com/sharedfiles/filedetails/?id=1129493108"); return
     
+    # Oknagan hramaner (Medzavornerou hamar):
     if vjf.Match_Start(mh,["-u", "-user",]) == True: getUserInfo = True
     
     for v in message.mentions: # Nayir amen martignere vor tag yegher en
         if v == bot.user: # Yete robotne, gerna sharnagel
             botTagged = True
-        # Yete medzavor e, sharnag e
         if getUserInfo == True:
-            if isAdmin == True:
+            if isAdmin == True: # Yete medzavor e, sharnag e
                 await message.channel.send(":information_source: **MEMBER INFORMATION** [*" + vjf.Format_Time(datetime.datetime.now()) + "*]\n:busts_in_silhouette: `Name: " + str(v) + " [ID: " + str(v.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(v.created_at) + "`\n:iphone: `On Mobile: " + str(v.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(v.top_role) + "`\n:inbox_tray:`Join Date: " + vjf.Format_Time(v.joined_at) + "`")
-            else:
+            else: # Medzavor chene, ese martoun vor chi gernar as hramane sharnagel
                 await message.channel.send("<@" + str(message.author.id) + ">, you must be an administrator to use that command!");
         m = m.replace("<@" + str(v.id) + ">","").strip() # serpe martigneroon anoonere
-    if botTagged == False:
-        return
+    
+    # Yete robote tag che yeghadz, mi sharnager
+    if botTagged == False: return
 
     print("-----------------------------")
     print("Author: " + str(message.author) + " [" + vjf.Format_Time(message.created_at) + "]")
@@ -93,15 +94,16 @@ async def on_message(message):
     
     if vjf.Match_Any(m,["who created you", "your owner", "your creator", "your author", "your dad", "your parents", "your father"]) == True: await vj_PrintMessage("DrVrej created me!"); return
     if vjf.Match_Any(m,["your mother", "your mom", "who is your mom"]) == True: await vj_PrintMessage("I don't have a mother!"); return
+    if vjf.Match_Any(m,["tell me a fact", "fact", "say a fact", "tell a fact", "say fact", "tell fact", "fun fact"]) == True: await vj_PrintMessage("Fun Fact! " + vjf.PickRandom(["Armenia is the first Christian nation!", "VJ Base stands for Vrej Base.", "VrejGaming was originally made on May 8th, 2011!", "VJ Base was originally created during Garry's Mod 12!", "Armenia's anthem is 'Mer Hayrenik', which stands for 'Our Fatherland'", "Armenia is one of the 10 ancient nations that still exists!", "Vrej in Armenian means Vengeance or Revenge.", "Armenian language has its own unique alphabet. grammar and sentence system!", "VJ Base 2.0 was released on January 1, 2015!", "VJ Base was the first addon for Garry's Mod to bring extensive customization. Soon after release, many addons began to follow the idea of customization."])); return
     
-    if vjf.Match_Any(m,["<:hl3:562737648926457893>", "hl3", "half life 3"]) == True: await vjf.vj_PrintMessage(vjf.PickRandom(["In your dreams you will see <:hl3:562737648926457893>!", "Release date: December 29, 9999", "Never. :eye:"])); return
+    if vjf.Match_Any(m,["<:hl3:562737648926457893>", "hl3", "half life 3"]) == True: await vj_PrintMessage(vjf.PickRandom(["In your dreams you will see <:hl3:562737648926457893>!", "Release date: December 29, 9999", "Never. :eye:"])); return
     if vjf.Match_Any(m,["cookie", u"\U0001F36A"]) == True: await vj_PrintMessage(":cookie:"); return
     if vjf.Match_Any(m,["armenia", "hayastan", "armo", "🇦🇲"]) == True: await vj_PrintMessage("Long Live Armenia! :flag_am:"); return
     if vjf.Match_Any(m,["gay", u"\U0001F3F3\uFE0F\u200D\U0001F308"]) == True: await vj_PrintMessage(":rainbow_flag:"); return
     if vjf.Match_Any(m,["i am happy", u"\U0001F600", u"\U0001F603", u"\U0001F604", u"\U0001F601", u"\U000FE332", u"\U0001F60A", u"\U0001F642", u"\u263A", u"\U0001F607", u"\U0001F643"]) == True: await vj_PrintMessage(vjf.PickRandom([u"\U0001F600", u"\U0001F603", u"\U0001F604", u"\U0001F601", u"\U000FE332", u"\U0001F60A", u"\U0001F642", u"\U000FE336", u"\U0001F607", u"\U0001F643"])); return
 
     # Yete pame chi hasgena:      "I don't recognize your message! Sorry :frowning:"
-    await vj_PrintMessage(vjf.PickRandom(["Yes you are!", "No you!", "Tell me more!", "Okay?", "Cool story!", "Understandable, have a nice day!", "You wot m8?!", "I was in the chest club.", "If you say so!", "I like trains.", "If you say so...", "I agree.", "I disagree."]))
+    await vj_PrintMessage(vjf.PickRandom(["ENT.Zombie = true", "Yes you are!", "No you!", "Tell me more!", "Okay?", "Cool story!", "Understandable, have a nice day!", "You wot m8?!", "I was in the chest club.", "If you say so!", "I like trains.", "If you say so...", "I agree.", "I disagree."]))
 
 kakhni_tive = None
 try:
