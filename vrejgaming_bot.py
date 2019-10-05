@@ -52,7 +52,7 @@ async def on_message(message):
     if vjf.Match_Exact(mh,["-server", "-sfiles"]) == True: await message.channel.send("DrVrej's Server Files: https://steamcommunity.com/sharedfiles/filedetails/?id=157267702"); return
     if vjf.Match_Exact(mh,["-im"]) == True: await message.channel.send("Broken / Incompatible Addons: https://steamcommunity.com/sharedfiles/filedetails/?id=1129493108"); return
     
-    if vjf.Match_Exact(mh,["-u", "-user",]) == True: getUserInfo = True
+    if vjf.Match_Start(mh,["-u", "-user",]) == True: getUserInfo = True
     
     for v in message.mentions: # Nayir amen martignere vor tag yegher en
         if v == bot.user: # Yete robotne, gerna sharnagel
