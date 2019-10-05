@@ -8,7 +8,7 @@ from random import randint
 bot = discord.Client()
 non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
 
-# https://discordpy.readthedocs.io/en/rewrite/api.html
+# https://discordpy.readthedocs.io/en/latest/api.html
 
 @bot.event
 async def on_member_join(member):
@@ -36,22 +36,33 @@ async def on_message(message):
     m_org = message.content # Original message
     m = m_org # The one that will be edited
     botTagged = False # Yete robot-e, tag yegher e, sharnage
+    isAdmin = vjf.IsAdmin(message.author) # Nayir yete medzavor e
+    getUserInfo = False # Amen tag yeghadz martigneroun masin hamar ge ker e
     
     # Oknagan hramaner:
     mh = m_org.strip() # Asiga minag hramaneroun hamar bidi kordzadzvi!
     for v in message.mentions: # Nayir amen martignere vor tag yegher en
         mh = mh.replace("<@" + str(v.id) + ">","").strip() # serpe martigneroon anoonere
-    if vjf.Match_Exact(mh,["-help", "-h", "-?"]) == True: await message.channel.send("```ini\n[-sg | -steam] = Steam Group\n[-i | -invite] = Discord Server\n[-vjbase | -vjb | -vj] = VJ Base Workshop Page\n[-vjof | -vjunof | -vjcol | -vjcollection] = VJ Base Official and Unofficial Addons\n[-server | -sfiles] = DrVrej's Server Files\n[-im] = Broken / Incompatible Addons\n```"); return
+    if vjf.Match_Exact(mh,["-help", "-h", "-?"]) == True: await message.channel.send("```ini\n[-sg | -steam] = Steam Group\n[-i | -invite] = Discord Server\n[-vjbase | -vjb | -vj] = VJ Base Workshop Page\n[-vjgit] = VJ Base GitHub Page\n[-vjof | -vjunof | -vjcol | -vjcollection] = VJ Base Official and Unofficial Addons\n[-server | -sfiles] = DrVrej's Server Files\n[-im] = Broken / Incompatible Addons\n[-u | -user] = Returns the information of the given user(s)\n```"); return
     if vjf.Match_Exact(mh,["-sg", "-steam"]) == True: await message.channel.send("Steam Group: https://steamcommunity.com/groups/vrejgaming"); return
     if vjf.Match_Exact(mh,["-i", "-invite"]) == True: await message.channel.send("Discord Invite: https://discordapp.com/invite/zwQjrdG"); return
     if vjf.Match_Exact(mh,["-vjbase", "-vjb", "-vj"]) == True: await message.channel.send("VJ Base Workshop Page: https://steamcommunity.com/sharedfiles/filedetails/?id=131759821"); return
+    if vjf.Match_Exact(mh,["-vjgit"]) == True: await message.channel.send("VJ Base GitHub Page: https://github.com/DrVrej/VJ-Base"); return
     if vjf.Match_Exact(mh,["-vjof", "-vjunof", "-vjcol", "-vjcollection"]) == True: await message.channel.send("VJ Base Official and Unofficial Addons: https://steamcommunity.com/sharedfiles/filedetails/?id=1080924955"); return
     if vjf.Match_Exact(mh,["-server", "-sfiles"]) == True: await message.channel.send("DrVrej's Server Files: https://steamcommunity.com/sharedfiles/filedetails/?id=157267702"); return
     if vjf.Match_Exact(mh,["-im"]) == True: await message.channel.send("Broken / Incompatible Addons: https://steamcommunity.com/sharedfiles/filedetails/?id=1129493108"); return
     
+    if vjf.Match_Exact(mh,["-u", "-user",]) == True: getUserInfo = True
+    
     for v in message.mentions: # Nayir amen martignere vor tag yegher en
         if v == bot.user: # Yete robotne, gerna sharnagel
             botTagged = True
+        # Yete medzavor e, sharnag e
+        if getUserInfo == True:
+            if isAdmin == True:
+                await message.channel.send(":information_source: **MEMBER INFORMATION** [*" + vjf.Format_Time(datetime.datetime.now()) + "*]\n:busts_in_silhouette: `Name: " + str(v) + " [ID: " + str(v.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(v.created_at) + "`\n:iphone: `On Mobile: " + str(v.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(v.top_role) + "`\n:inbox_tray:`Join Date: " + vjf.Format_Time(v.joined_at) + "`")
+            else:
+                await message.channel.send("<@" + str(message.author.id) + ">, you must be an administrator to use that command!");
         m = m.replace("<@" + str(v.id) + ">","").strip() # serpe martigneroon anoonere
     if botTagged == False:
         return

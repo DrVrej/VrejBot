@@ -30,3 +30,7 @@ def Match_Any(item,a):
 def Format_Time(t):
     # t = jamnage
     return t.strftime("%B %d, %Y | %I:%M:%S %p")
+    
+def IsAdmin(member):
+    # member = The member to check if is admin
+    return member.guild_permissions.administrator
