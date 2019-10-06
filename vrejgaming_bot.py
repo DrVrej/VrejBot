@@ -88,8 +88,8 @@ async def on_message(message):
         finalmsg = ":notepad_spiral: **Suggestion by <@" + str(message.author.id) + "> **[*" + vjf.Format_Time(datetime.datetime.now()) + "*] :notepad_spiral:\n" + (str(message.content).replace("-suggestion","").strip())
         numattach = 0
         for v in message.attachments: # Amen negarnere ara
-            finalmsg = finalmsg + 1
-            finalmsg = finalmsg + " \nImage " + str(finalmsg) + ": " + (v.url) # Meg, meg aveltsour negarnere namagin mech
+            numattach = numattach + 1
+            finalmsg = finalmsg + " \nImage " + str(numattach) + ": " + (v.url) # Meg, meg aveltsour negarnere namagin mech
         getchan1 = vjf.GetChannel(message.guild.channels, discord.ChannelType.text, 629101812208631808) # Pendre "suggestion" channele
         if getchan1 != None:
             await getchan1.send(finalmsg)
