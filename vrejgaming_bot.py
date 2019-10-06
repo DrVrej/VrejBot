@@ -51,7 +51,7 @@ async def vj_update_stats():
         # People in lobby
         getchan1 = vjf.GetChannel(g.channels, discord.ChannelType.voice, 582006550873505792)
         if getchan1 != None: #                          v-- Ays deghe amen martige ara nevadz robotner, yev nevaz amen antamnere --v
-            await getchan1.edit(name = "👤🆕 Lobby: " + str((len(g.members) - len(vjf.GetBots(g.members))) - len(vjf.GetRank(g.members, 390961994645241871))), reason = re)
+            await getchan1.edit(name = "🆕 Lobby: " + str((len(g.members) - len(vjf.GetBots(g.members))) - len(vjf.GetRank(g.members, 390961994645241871))), reason = re)
         
         # Bots
         getchan1 = vjf.GetChannel(g.channels, discord.ChannelType.voice, 562275215619653642)
