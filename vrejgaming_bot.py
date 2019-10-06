@@ -9,6 +9,7 @@ bot = discord.Client()
 non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
 
 # https://discordpy.readthedocs.io/en/latest/api.html
+# python vrejgaming_bot.py
 
 @bot.event
 async def on_ready():
@@ -81,6 +82,24 @@ async def on_message(message):
     
     # Oknagan hramaner (Medzavornerou hamar):
     if vjf.Match_Start(mh,["-u", "-user",]) == True: getUserInfo = True
+    
+    # Suggestion Command and make sure the sender doesn't have a restricted roles!
+    if vjf.Match_Start(mh,["-suggestion"]) == True and len(vjf.GetRank([message.author],630501693984997447)) < 1:
+        finalmsg = ":notepad_spiral: **Suggestion by <@" + str(message.author.id) + "> **[*" + vjf.Format_Time(datetime.datetime.now()) + "*] :notepad_spiral:\n" + (str(message.content).replace("-suggestion","").strip())
+        numattach = 0
+        for v in message.attachments: # Amen negarnere ara
+            finalmsg = finalmsg + 1
+            finalmsg = finalmsg + " \nImage " + str(finalmsg) + ": " + (v.url) # Meg, meg aveltsour negarnere namagin mech
+        for g in message.guild.channels: # Amen gayanere ara ays server-en
+            getchan1 = vjf.GetChannel(g.channels, discord.ChannelType.text, 629101812208631808) # Pendre "suggestion" channele
+            if getchan1 != None:
+                await getchan1.send(finalmsg)
+                return
+    
+    # Yete kerokhe robotne yeval nayir yete suggestion e
+    if message.author == bot.user and vjf.Match_Any(m_org,["Suggestion by"]) == True:
+        await message.add_reaction("\U00002705")
+        await message.add_reaction("\U0000274c")
     
     for v in message.mentions: # Nayir amen martignere vor tag yegher en
         if v == bot.user: # Yete robotne, gerna sharnagel
