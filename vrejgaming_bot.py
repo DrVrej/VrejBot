@@ -71,7 +71,7 @@ async def on_message(message):
     mh = m_org.strip() # Asiga minag hramaneroun hamar bidi kordzadzvi!
     for v in message.mentions: # Nayir amen martignere vor tag yegher en
         mh = mh.replace("<@" + str(v.id) + ">","").strip() # serpe martigneroon anoonere
-    if vjf.Match_Exact(mh,["-help", "-h", "-?"]) == True: await message.channel.send("```ini\n[-sg | -steam] = Steam Group\n[-i | -invite] = Discord Server\n[-vjbase | -vjb | -vj] = VJ Base Workshop Page\n[-vjgit] = VJ Base GitHub Page\n[-vjof | -vjunof | -vjcol | -vjcollection] = VJ Base Official and Unofficial Addons\n[-server | -sfiles] = DrVrej's Server Files\n[-im] = Broken / Incompatible Addons\n[-u | -user] = Returns the information of the given user(s)\n```"); return
+    if vjf.Match_Exact(mh,["-help", "-h", "-?"]) == True: await message.channel.send("```ini\n[-sg | -steam] = Steam Group\n[-i | -invite] = Discord Server\n[-suggestion] = Create a suggestion for anything related to this group\n[-vjbase | -vjb | -vj] = VJ Base Workshop Page\n[-vjgit] = VJ Base GitHub Page\n[-vjof | -vjunof | -vjcol | -vjcollection] = VJ Base Official and Unofficial Addons\n[-server | -sfiles] = DrVrej's Server Files\n[-im] = Broken / Incompatible Addons\n[-u | -user] = Returns the information of the given user(s)\n```"); return
     if vjf.Match_Exact(mh,["-sg", "-steam"]) == True: await message.channel.send("Steam Group: https://steamcommunity.com/groups/vrejgaming"); return
     if vjf.Match_Exact(mh,["-i", "-invite"]) == True: await message.channel.send("Discord Invite: https://discordapp.com/invite/zwQjrdG"); return
     if vjf.Match_Exact(mh,["-vjbase", "-vjb", "-vj"]) == True: await message.channel.send("VJ Base Workshop Page: https://steamcommunity.com/sharedfiles/filedetails/?id=131759821"); return
@@ -90,11 +90,10 @@ async def on_message(message):
         for v in message.attachments: # Amen negarnere ara
             finalmsg = finalmsg + 1
             finalmsg = finalmsg + " \nImage " + str(finalmsg) + ": " + (v.url) # Meg, meg aveltsour negarnere namagin mech
-        for g in message.guild.channels: # Amen gayanere ara ays server-en
-            getchan1 = vjf.GetChannel(g.channels, discord.ChannelType.text, 629101812208631808) # Pendre "suggestion" channele
-            if getchan1 != None:
-                await getchan1.send(finalmsg)
-                return
+        getchan1 = vjf.GetChannel(message.guild.channels, discord.ChannelType.text, 391189293965508608) # Pendre "suggestion" channele
+        if getchan1 != None:
+            await getchan1.send(finalmsg)
+            return
     
     # Yete kerokhe robotne yeval nayir yete suggestion e
     if message.author == bot.user and vjf.Match_Any(m_org,["Suggestion by"]) == True:
