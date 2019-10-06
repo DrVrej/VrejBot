@@ -11,28 +11,55 @@ non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
 # https://discordpy.readthedocs.io/en/latest/api.html
 
 @bot.event
+async def on_ready():
+    await vj_update_stats()
+    print("VrejGaming Bot Has successfully loaded!")
+
+@bot.event
 async def on_member_join(member):
     #print(member.avatar_url)
     #print(member.color)
+    await vj_update_stats()
     for channel in member.guild.channels:
         if str(channel) == "bot-log":
             await channel.send(":inbox_tray: **MEMBER JOINED** [*" + vjf.Format_Time(member.joined_at) + "*]\n:busts_in_silhouette: `Name: " + str(member) + " [ID: " + str(member.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(member.created_at) + "`\n:iphone: `On Mobile: " + str(member.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(member.top_role) + "`")
 
 @bot.event
 async def on_member_remove(member):
+    await vj_update_stats()
     for channel in member.guild.channels:
         if str(channel) == "bot-log":
             await channel.send(":outbox_tray: **MEMBER LEFT** [*" + vjf.Format_Time(datetime.datetime.now()) + "*]\n:busts_in_silhouette: `Name: " + str(member) + " [ID: " + str(member.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(member.created_at) + "`\n:iphone: `On Mobile: " + str(member.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(member.top_role) + "`\n:inbox_tray:`Join Date: " + vjf.Format_Time(member.joined_at) + "`")
 
-#@bot.event
-#async def on_member_update(before, after):
-#    # before – The Member that updated their profile with the old info. ||| after – The Member that updated their profile with the updated info.
+@bot.event
+async def on_member_update(before, after):
+    # before – The Member that updated their profile with the old info. ||| after – The Member that updated their profile with the updated info.
+    if before.roles != after.roles: # Nayir, yete martoun role-ere pokhvetsan
+        await vj_update_stats()
 #    print("Member update test!")
 #    for channel in member.guild.channels:
 
+async def vj_update_stats():
+    for g in bot.guilds:
+        re = "To keep the number up to date!"
+        
+        # Everyone (Including bots)
+        getchan1 = vjf.GetChannel(g.channels, discord.ChannelType.voice, 562276245174485002)
+        if getchan1 != None:
+            await getchan1.edit(name = "👤 Total: " + str(len(g.members)), reason = re)
+        
+        # People in lobby
+        getchan1 = vjf.GetChannel(g.channels, discord.ChannelType.voice, 582006550873505792)
+        if getchan1 != None: #                          v-- Ays deghe amen martige ara nevadz robotner, yev nevaz amen antamnere --v
+            await getchan1.edit(name = "👤🆕 Lobby: " + str((len(g.members) - len(vjf.GetBots(g.members))) - len(vjf.GetRank(g.members, 390961994645241871))), reason = re)
+        
+        # Bots
+        getchan1 = vjf.GetChannel(g.channels, discord.ChannelType.voice, 562275215619653642)
+        if getchan1 != None:
+            await getchan1.edit(name = "🤖 Bots: " + str(len(vjf.GetBots(g.members))), reason = re)
+
 @bot.event
 async def on_message(message):
-    # Sharnag e, minag yete as bot-e tag yegher e!
     m_org = message.content # Original message
     m = m_org # The one that will be edited
     botTagged = False # Yete robote, tag yegher e, sharnage
@@ -65,7 +92,7 @@ async def on_message(message):
                 await message.channel.send("<@" + str(message.author.id) + ">, you must be an administrator to use that command!");
         m = m.replace("<@" + str(v.id) + ">","").strip() # serpe martigneroon anoonere
     
-    # Yete robote tag che yeghadz, mi sharnager
+    # Sharnag e, minag yete as bot-e tag yegher e!
     if botTagged == False: return
 
     print("-----------------------------")
