@@ -104,10 +104,10 @@ async def on_message(message):
         if v == bot.user: # Yete robotne, gerna sharnagel
             botTagged = True
         if getUserInfo == True:
-            if isAdmin == True: # Yete medzavor e, sharnag e
-                await message.channel.send(":information_source: **MEMBER INFORMATION** [*" + vjf.Format_Time(datetime.datetime.now()) + "*]\n:busts_in_silhouette: `Name: " + str(v) + " [ID: " + str(v.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(v.created_at) + "`\n:iphone: `On Mobile: " + str(v.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(v.top_role) + "`\n:inbox_tray:`Join Date: " + vjf.Format_Time(v.joined_at) + "`")
-            else: # Medzavor chene, ese martoun vor chi gernar as hramane sharnagel
-                await message.channel.send("<@" + str(message.author.id) + ">, you must be an administrator to use that command!");
+            #if isAdmin == True: # Yete medzavor e, sharnag e
+            await message.channel.send(":information_source: **MEMBER INFORMATION** [*" + vjf.Format_Time(datetime.datetime.now()) + "*]\n:busts_in_silhouette: `Name: " + str(v) + " [ID: " + str(v.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(v.created_at) + "`\n:iphone: `On Mobile: " + str(v.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(v.top_role) + "`\n:inbox_tray:`Join Date: " + vjf.Format_Time(v.joined_at) + "`")
+            #else: # Medzavor chene, ese martoun vor chi gernar as hramane sharnagel
+                #await message.channel.send("<@" + str(message.author.id) + ">, you must be an administrator to use that command!");
         m = m.replace("<@" + str(v.id) + ">","").strip() # serpe martigneroon anoonere
     
     # Sharnag e, minag yete as bot-e tag yegher e!
