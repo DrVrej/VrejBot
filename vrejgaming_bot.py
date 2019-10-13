@@ -80,7 +80,7 @@ async def on_message(message):
     if vjf.Match_Exact(mh,["-server", "-sfiles"]) == True: await message.channel.send("DrVrej's Server Files: https://steamcommunity.com/sharedfiles/filedetails/?id=157267702"); return
     if vjf.Match_Exact(mh,["-im"]) == True: await message.channel.send("Broken / Incompatible Addons: https://steamcommunity.com/sharedfiles/filedetails/?id=1129493108"); return
     
-    # Oknagan hramaner (Medzavornerou hamar):
+    # Oknagan hramaner:
     if vjf.Match_Start(mh,["-u", "-user",]) == True: getUserInfo = True
     
     # Suggestion Command and make sure the sender doesn't have a restricted roles!
@@ -93,6 +93,7 @@ async def on_message(message):
         getchan1 = vjf.GetChannel(message.guild.channels, discord.ChannelType.text, 629101812208631808) # Pendre "suggestion" channele
         if getchan1 != None:
             await getchan1.send(finalmsg)
+            await message.delete()
             return
     
     # Yete kerokhe robotne yeval nayir yete suggestion e
