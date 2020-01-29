@@ -67,12 +67,12 @@ async def on_message(message):
     m = m_org # The one that will be edited
     botTagged = False # Yete robote, tag yegher e, sharnage
     isAdmin = vjf.IsAdmin(message.author) # Nayir yete medzavor e
-    getUserInfo = False # Amen tag yeghadz martigneroun masin hamar ge ker e
+    getUserInfo = False # Amen tag yeghadz martigneroun masin hamar ge ker e (-u, -user)
     
     # Oknagan hramaner:
     mh = m_org.strip() # Asiga minag hramaneroun hamar bidi kordzadzvi!
     for v in message.mentions: # Nayir amen martignere vor tag yegher en
-        mh = mh.replace("<@" + str(v.id) + ">","").strip() # serpe martigneroon anoonere
+        mh = mh.replace("<@!" + str(v.id) + ">","").strip() # serpe martigneroon anoonere
     if vjf.Match_Exact(mh,["-help", "-h", "-?"]) == True: await message.channel.send("```ini\n[-sg | -steam] = Steam Group\n[-i | -invite] = Discord Server (Invite link)\n[-vjbase | -vjb | -vj] = VJ Base Workshop Page\n[-vjgit] = VJ Base GitHub Page\n[-hlr] = Half-Life Resurgence GitHub Page\n[-vjof | -vjunof | -vjcol | -vjcollection] = VJ Base Official and Unofficial Addons\n[-server | -sfiles] = DrVrej's Server Files\n[-im] = Broken / Incompatible Addons\n[-suggestion] = Create a suggestion for anything related to this group\n[-u | -user] = Returns the information of the given user(s)\n```"); return
     if vjf.Match_Exact(mh,["-sg", "-steam"]) == True: await message.channel.send("Steam Group: https://steamcommunity.com/groups/vrejgaming"); return
     if vjf.Match_Exact(mh,["-i", "-invite"]) == True: await message.channel.send("Discord Invite: https://discordapp.com/invite/zwQjrdG"); return
@@ -88,7 +88,7 @@ async def on_message(message):
     
     # Suggestion Command and make sure the sender doesn't have a restricted roles!
     if vjf.Match_Start(mh,["-suggestion"]) == True and len(vjf.GetRank([message.author],630501693984997447)) < 1:
-        finalmsg = ":notepad_spiral: **Suggestion by <@" + str(message.author.id) + "> **[*" + vjf.Format_Time(datetime.datetime.now()) + "*] :notepad_spiral:\n" + (str(message.content).replace("-suggestion","").strip())
+        finalmsg = ":notepad_spiral: **Suggestion by <@!" + str(message.author.id) + "> **[*" + vjf.Format_Time(datetime.datetime.now()) + "*] :notepad_spiral:\n" + (str(message.content).replace("-suggestion","").strip())
         numattach = 0
         for v in message.attachments: # Amen negarnere ara
             numattach = numattach + 1
@@ -111,8 +111,8 @@ async def on_message(message):
             #if isAdmin == True: # Yete medzavor e, sharnag e
             await message.channel.send(":information_source: **MEMBER INFORMATION** [*" + vjf.Format_Time(datetime.datetime.now()) + "*]\n:busts_in_silhouette: `Name: " + str(v) + " [ID: " + str(v.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(v.created_at) + "`\n:iphone: `On Mobile: " + str(v.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(v.top_role) + "`\n:inbox_tray:`Join Date: " + vjf.Format_Time(v.joined_at) + "`")
             #else: # Medzavor chene, ese martoun vor chi gernar as hramane sharnagel
-                #await message.channel.send("<@" + str(message.author.id) + ">, you must be an administrator to use that command!");
-        m = m.replace("<@" + str(v.id) + ">","").strip() # serpe martigneroon anoonere
+                #await message.channel.send("<@!" + str(message.author.id) + ">, you must be an administrator to use that command!");
+        m = m.replace("<@!" + str(v.id) + ">","").strip() # serpe martigneroon anoonere
     
     # Sharnag e, minag yete as bot-e tag yegher e!
     if botTagged == False: return
@@ -134,12 +134,12 @@ async def on_message(message):
     
     # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     async def vj_PrintMessage(s):
-        await message.channel.send("<@" + str(message.author.id) + "> " + s)
+        await message.channel.send("<@!" + str(message.author.id) + "> " + s)
     
     if vjf.Match_Start(m,["hello", "hi", "greetings", "allo"]) == True: await vj_PrintMessage(vjf.PickRandom(["Hello!", "Hi!", "Greetings!", "Allo!"])); return
     if vjf.Match_Start(m,["how are you", "how you doing", "are you good"]) == True: await vj_PrintMessage(vjf.PickRandom(["I am good! You?", "I am doing great! how about you?", "Good, you?"])); return
     if vjf.Match_Start(m,["are you a bot", "you are a bot", "you a bot"]) == True: await vj_PrintMessage(vjf.PickRandom(["I am a bot!", "I know I am a bot!", " I am robot!", "BEEP BOOP BEEP BOOP"])); return
-    if vjf.Match_Start(m,["talk to hgrunt"]) == True: await message.channel.send(vjf.PickRandom(["<@396884008501510144> Hello!"])); return
+    if vjf.Match_Start(m,["talk to hgrunt"]) == True: await message.channel.send(vjf.PickRandom(["<@!396884008501510144> Hello!"])); return
     
     if vjf.Match_Any(m,["who created you", "your owner", "your creator", "your author", "your dad", "your parents", "your father"]) == True: await vj_PrintMessage("DrVrej created me!"); return
     if vjf.Match_Any(m,["your mother", "your mom", "who is your mom"]) == True: await vj_PrintMessage("I don't have a mother!"); return
