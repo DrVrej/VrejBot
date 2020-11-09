@@ -1,4 +1,4 @@
-discord.py==1.4.1
+discord.py==1.5.1
 dnspython==2.0.0
 PyNaCl==1.4.0
 async-timeout==3.0.1

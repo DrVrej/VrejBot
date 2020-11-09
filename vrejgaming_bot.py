@@ -66,7 +66,8 @@ async def on_message(message):
     m_org = message.content # Original message
     m = m_org # The one that will be edited
     botTagged = False # Yete robote, tag yegher e, sharnage
-    isAdmin = vjf.IsAdmin(message.author) # Nayir yete medzavor e
+	# Unused
+    #isAdmin = vjf.IsAdmin(message.author) # Nayir yete medzavor e
     getUserInfo = False # Amen tag yeghadz martigneroun masin hamar ge ker e (-u, -user)
     
     # Oknagan hramaner:
