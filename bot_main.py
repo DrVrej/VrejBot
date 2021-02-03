@@ -2,22 +2,22 @@ import discord
 import sys
 import os
 import datetime
-import vrejgaming_bot_funcs as vjf
+import bot_funcs as vjf
 from random import randint
 
 intents = discord.Intents.all()  # A factory method that creates a Intents with everything enabled.
 bot = discord.Client(intents=intents)
 non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
 
-# https://discordpy.readthedocs.io/en/latest/api.html
-# python vrejgaming_bot.py
-# pip list --outdated	   to check for outdated packages
-# pip install --upgrade discord.py	  to update discord.py
+# discord.py docs = https://discordpy.readthedocs.io/en/latest/api.html
+# Manual run = python bot_main.py
+# Check for outdated packages = pip list --outdated
+# Update discord.py = pip install --upgrade discord.py
 
 @bot.event
 async def on_ready():
 	await vj_update_stats()
-	print("VrejGaming Bot Has successfully loaded!")
+	print("VrejBot Has successfully loaded!")
 
 @bot.event
 async def on_member_join(member):
@@ -151,7 +151,6 @@ async def on_message(message):
 	if vjf.Match_Any(m,["<:hl3:562737648926457893>", "hl3", "half life 3"]) == True: await vj_PrintMessage(vjf.PickRandom(["In your dreams you will see <:hl3:562737648926457893>!", "Release date: December 29, 9999", "Never. :eye:"])); return
 	if vjf.Match_Any(m,["cookie", u"\U0001F36A"]) == True: await vj_PrintMessage(":cookie:"); return
 	if vjf.Match_Any(m,["armenia", "hayastan", "armo", "🇦🇲"]) == True: await vj_PrintMessage("Long Live Armenia! :flag_am:"); return
-	if vjf.Match_Any(m,["gay", u"\U0001F3F3\uFE0F\u200D\U0001F308"]) == True: await vj_PrintMessage(":rainbow_flag:"); return
 	if vjf.Match_Any(m,["happy", u"\U0001F600", u"\U0001F603", u"\U0001F604", u"\U0001F601", u"\U000FE332", u"\U0001F60A", u"\U0001F642", u"\u263A", u"\U0001F607", u"\U0001F643"]) == True: await vj_PrintMessage(vjf.PickRandom([u"\U0001F600", u"\U0001F603", u"\U0001F604", u"\U0001F601", u"\U000FE332", u"\U0001F60A", u"\U0001F642", u"\U000FE336", u"\U0001F607", u"\U0001F643"])); return
 
 	# Yete pame chi hasgena:	  "I don't recognize your message! Sorry :frowning:"
