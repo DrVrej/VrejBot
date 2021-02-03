@@ -1,1 +1,1 @@
-worker: python vrejgaming_bot.py
+worker: python bot_main.py
