@@ -43,25 +43,33 @@ async def on_member_update(before, after):
 #	print("Member update test!")
 #	for channel in member.guild.channels:
 
+chVoice_Stats = 562276245174485002
 async def vj_update_stats():
 	# Loop through all the servers that we are in
 	for g in bot.guilds:
-		re = "To keep the number up to date!"
+		re = "Updating server stats..."
+		chName = "👤" + str(len(g.members)) # Everyone (Including bots)
+		chName += " 🆕" + str((len(g.members) - len(vjf.GetBots(g.members))) - len(vjf.GetRank(g.members, 390961994645241871)) - len(vjf.GetRank(g.members, 463809123427811328))) # People in lobby
+		chName += " 🤖" + str(len(vjf.GetBots(g.members))) # Bots
 		
-		# Everyone (Including bots)
-		getchan1 = vjf.GetChannel(g.channels, discord.ChannelType.voice, 562276245174485002)
-		if getchan1 != None:
-			await getchan1.edit(name = "👤 Total: " + str(len(g.members)), reason = re)
+		getChan = vjf.GetChannel(g.channels, discord.ChannelType.voice, chVoice_Stats)
+		if getChan != None:
+			await getChan.edit(name = chName, reason = re)
 		
-		# People in lobby
-		getchan1 = vjf.GetChannel(g.channels, discord.ChannelType.voice, 582006550873505792)
-		if getchan1 != None: #						  v-- Ays deghe amen martige ara nevaz robotner, yev nevaz amen antamnere, yev nevaz pandargyalner --v
-			await getchan1.edit(name = "🆕 Lobby: " + str((len(g.members) - len(vjf.GetBots(g.members))) - len(vjf.GetRank(g.members, 390961994645241871)) - len(vjf.GetRank(g.members, 463809123427811328))), reason = re)
+		# # Everyone (Including bots)
+		# getchan1 = vjf.GetChannel(g.channels, discord.ChannelType.voice, 562276245174485002)
+		# if getchan1 != None:
+		# 	await getchan1.edit(name = "👤 Total: " + str(len(g.members)), reason = re)
 		
-		# Bots
-		getchan1 = vjf.GetChannel(g.channels, discord.ChannelType.voice, 562275215619653642)
-		if getchan1 != None:
-			await getchan1.edit(name = "🤖 Bots: " + str(len(vjf.GetBots(g.members))), reason = re)
+		# # People in lobby
+		# getchan1 = vjf.GetChannel(g.channels, discord.ChannelType.voice, 582006550873505792)
+		# if getchan1 != None: #						  v-- Ays deghe amen martige ara nevaz robotner, yev nevaz amen antamnere, yev nevaz pandargyalner --v
+		# 	await getchan1.edit(name = "🆕 Lobby: " + str((len(g.members) - len(vjf.GetBots(g.members))) - len(vjf.GetRank(g.members, 390961994645241871)) - len(vjf.GetRank(g.members, 463809123427811328))), reason = re)
+		
+		# # Bots
+		# getchan1 = vjf.GetChannel(g.channels, discord.ChannelType.voice, 562275215619653642)
+		# if getchan1 != None:
+		# 	await getchan1.edit(name = "🤖 Bots: " + str(len(vjf.GetBots(g.members))), reason = re)
 
 @bot.event
 async def on_message(message):
