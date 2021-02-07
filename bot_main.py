@@ -49,6 +49,7 @@ async def vj_update_stats():
 	for g in bot.guilds:
 		re = "Updating server stats..."
 		chName = "👤" + str(len(g.members)) # Everyone (Including bots)
+		#										v-- Ays deghe amen martige ara nevaz robotner, yev nevaz amen antamnere, yev nevaz pandargyalner --v
 		chName += " 🆕" + str((len(g.members) - len(vjf.GetBots(g.members))) - len(vjf.GetRank(g.members, 390961994645241871)) - len(vjf.GetRank(g.members, 463809123427811328))) # People in lobby
 		chName += " 🤖" + str(len(vjf.GetBots(g.members))) # Bots
 		
