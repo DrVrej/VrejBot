@@ -1,3 +1,3 @@
 # VrejBot
-Just a personal bot for my servers.
-Join the main server: https://discordapp.com/invite/zwQjrdG
+Discord bot that includes commands, basic conversations and couple of fun features!
+Main server: https://discordapp.com/invite/zwQjrdG
