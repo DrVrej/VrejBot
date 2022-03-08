@@ -4,3 +4,4 @@ __pycache__/
 
 # As abranknere tske
 !requirements.txt
+!runtime.txt
