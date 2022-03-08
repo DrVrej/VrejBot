@@ -3,16 +3,35 @@ import sys
 import os
 import datetime
 import bot_funcs as vjf
-from random import randint
+
+########## Notes ##########
+# discord.py docs = https://discordpy.readthedocs.io/en/latest/api.html
+# Manual run = python bot_main.py
+# Check for outdated packages = pip list --outdated
+# Update all packages = pip freeze | %{$_.split('==')[0]} | %{pip install --upgrade $_}
+# Update discord.py = pip install --upgrade discord.py
 
 intents = discord.Intents.all()  # A factory method that creates a Intents with everything enabled.
 bot = discord.Client(intents=intents)
 non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
 
-# discord.py docs = https://discordpy.readthedocs.io/en/latest/api.html
-# Manual run = python bot_main.py
-# Check for outdated packages = pip list --outdated
-# Update discord.py = pip install --upgrade discord.py
+########## Channel IDs ##########
+idChanVoice_Stat = 562276245174485002 # Fake voice channel (Used for stat display)
+idRole_Member = 390961994645241871
+idRole_Quarantine = 463809123427811328
+
+async def vj_update_stats():
+	# Loop through all the servers that we are in
+	for g in bot.guilds:
+		numEveryone = len(g.members)
+		numBots = len(vjf.GetBots(g.members))
+		# Everyone,     (Everyone - bots - members - quarantine),     Bots
+		chName = "👤" + str(numEveryone) + " 🆕" + str(numEveryone - numBots - len(vjf.GetRank(g.members, idRole_Member)) - len(vjf.GetRank(g.members, idRole_Quarantine))) + " 🤖" + str(numBots)
+		
+		# Get the fake voice channel, make sure it exists and finally update the stats!
+		getChan = vjf.GetChannel(g.channels, discord.ChannelType.voice, idChanVoice_Stat)
+		if getChan != None:
+			await getChan.edit(name = chName, reason = "Updating server stats...")
 
 @bot.event
 async def on_ready():
@@ -40,37 +59,7 @@ async def on_member_update(before, after):
 	# before – The Member that updated their profile with the old info. ||| after – The Member that updated their profile with the updated info.
 	if before.roles != after.roles: # Nayir, yete martoun role-ere pokhvetsan
 		await vj_update_stats()
-#	print("Member update test!")
-#	for channel in member.guild.channels:
-
-chVoice_Stats = 562276245174485002
-async def vj_update_stats():
-	# Loop through all the servers that we are in
-	for g in bot.guilds:
-		re = "Updating server stats..."
-		chName = "👤" + str(len(g.members)) # Everyone (Including bots)
-		#										v-- Ays deghe amen martige ara nevaz robotner, yev nevaz amen antamnere, yev nevaz pandargyalner --v
-		chName += " 🆕" + str((len(g.members) - len(vjf.GetBots(g.members))) - len(vjf.GetRank(g.members, 390961994645241871)) - len(vjf.GetRank(g.members, 463809123427811328))) # People in lobby
-		chName += " 🤖" + str(len(vjf.GetBots(g.members))) # Bots
-		
-		getChan = vjf.GetChannel(g.channels, discord.ChannelType.voice, chVoice_Stats)
-		if getChan != None:
-			await getChan.edit(name = chName, reason = re)
-		
-		# # Everyone (Including bots)
-		# getchan1 = vjf.GetChannel(g.channels, discord.ChannelType.voice, 562276245174485002)
-		# if getchan1 != None:
-		# 	await getchan1.edit(name = "👤 Total: " + str(len(g.members)), reason = re)
-		
-		# # People in lobby
-		# getchan1 = vjf.GetChannel(g.channels, discord.ChannelType.voice, 582006550873505792)
-		# if getchan1 != None: #						  v-- Ays deghe amen martige ara nevaz robotner, yev nevaz amen antamnere, yev nevaz pandargyalner --v
-		# 	await getchan1.edit(name = "🆕 Lobby: " + str((len(g.members) - len(vjf.GetBots(g.members))) - len(vjf.GetRank(g.members, 390961994645241871)) - len(vjf.GetRank(g.members, 463809123427811328))), reason = re)
-		
-		# # Bots
-		# getchan1 = vjf.GetChannel(g.channels, discord.ChannelType.voice, 562275215619653642)
-		# if getchan1 != None:
-		# 	await getchan1.edit(name = "🤖 Bots: " + str(len(vjf.GetBots(g.members))), reason = re)
+#	print("Member updated!")
 
 @bot.event
 async def on_message(message):
@@ -81,7 +70,7 @@ async def on_message(message):
 	#isAdmin = vjf.IsAdmin(message.author) # Nayir yete medzavor e
 	getUserInfo = False # Amen tag yeghadz martigneroun masin hamar ge ker e (-u, -user)
 	
-	# Oknagan hramaner:
+	# Link hramaner:
 	mh = m_org.strip() # Asiga minag hramaneroun hamar bidi kordzadzvi!
 	for v in message.mentions: # Nayir amen martignere vor tag yegher en
 		mh = mh.replace("<@!" + str(v.id) + ">","").strip() # serpe martigneroon anoonere
@@ -111,7 +100,7 @@ async def on_message(message):
 			await message.delete()
 			return
 	
-	# Yete kerokhe robotne yeval nayir yete suggestion e
+	# If the message is from VrejBot, and its the suggestion reply, then tag it with approve/disapprove emojis
 	if message.author == bot.user and vjf.Match_Any(m_org,["Suggestion by"]) == True:
 		await message.add_reaction("\U00002705")
 		await message.add_reaction("\U0000274c")
@@ -161,7 +150,7 @@ async def on_message(message):
 	if vjf.Match_Any(m,["cookie", u"\U0001F36A"]) == True: await vj_PrintMessage(":cookie:"); return
 	if vjf.Match_Any(m,["armenia", "hayastan", "armo", "🇦🇲"]) == True: await vj_PrintMessage("Long Live Armenia! :flag_am:"); return
 	if vjf.Match_Any(m,["happy", u"\U0001F600", u"\U0001F603", u"\U0001F604", u"\U0001F601", u"\U000FE332", u"\U0001F60A", u"\U0001F642", u"\u263A", u"\U0001F607", u"\U0001F643"]) == True: await vj_PrintMessage(vjf.PickRandom([u"\U0001F600", u"\U0001F603", u"\U0001F604", u"\U0001F601", u"\U000FE332", u"\U0001F60A", u"\U0001F642", u"\U000FE336", u"\U0001F607", u"\U0001F643"])); return
-
+	
 	# Yete pame chi hasgena:	  "I don't recognize your message! Sorry :frowning:"
 	await vj_PrintMessage(vjf.PickRandom(["ENT.Zombie = true", "Yes you are!", "No you!", "Tell me more!", "Okay?", "Cool story!", "Understandable, have a nice day!", "You wot m8?!", "I was in the chest club.", "If you say so!", "I like trains.", "If you say so...", "I agree.", "I disagree."]))
 
