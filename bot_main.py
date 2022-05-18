@@ -154,10 +154,10 @@ async def on_message(message):
 	# Yete pame chi hasgena:	  "I don't recognize your message! Sorry :frowning:"
 	await vj_PrintMessage(vjf.PickRandom(["ENT.Zombie = true", "Yes you are!", "No you!", "Tell me more!", "Okay?", "Cool story!", "Understandable, have a nice day!", "You wot m8?!", "I was in the chest club.", "If you say so!", "I like trains.", "If you say so...", "I agree.", "I disagree."]))
 
-kakhniTive = None
+kakhni_tive = None
 try:
    os.environ["KAKHNI_TIVE"]
-   kakhniTive = os.environ["KAKHNI_TIVE"]
+   kakhni_tive = os.environ["KAKHNI_TIVE"]
 except KeyError:
-   kakhniTive = open("kakhni_tive.txt", "r").readline()
-bot.run(kakhniTive)
+   kakhni_tive = open("kakhni_tive.txt", "r").readline()
+bot.run(kakhni_tive)
