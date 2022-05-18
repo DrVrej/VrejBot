@@ -73,7 +73,7 @@ async def on_message(message):
 	# Link hramaner:
 	mh = m_org.strip() # Asiga minag hramaneroun hamar bidi kordzadzvi!
 	for v in message.mentions: # Nayir amen martignere vor tag yegher en
-		mh = mh.replace("<@!" + str(v.id) + ">","").strip() # serpe martigneroon anoonere
+		mh = mh.replace("<@" + str(v.id) + ">","").strip() # serpe martigneroon anoonere
 	if vjf.Match_Exact(mh,["-help", "-h", "-?"]) == True: await message.channel.send("```ini\n[-sg | -steam] = Steam Group\n[-i | -invite] = Discord Server (Invite link)\n[-vjbase | -vjb | -vj] = VJ Base Workshop Page\n[-vjgit] = VJ Base GitHub Page\n[-hlr] = Half-Life Resurgence GitHub Page\n[-vjof | -vjunof | -vjcol | -vjcollection] = VJ Base Official and Unofficial Addons\n[-server | -sfiles] = DrVrej's Server Files\n[-im] = Broken / Incompatible Addons\n[-suggestion] = Create a suggestion for anything related to this group\n[-u | -user] = Returns the information of the given user(s)\n```"); return
 	if vjf.Match_Exact(mh,["-sg", "-steam"]) == True: await message.channel.send("Steam Group: https://steamcommunity.com/groups/vrejgaming"); return
 	if vjf.Match_Exact(mh,["-i", "-invite"]) == True: await message.channel.send("Discord Invite: https://discordapp.com/invite/zwQjrdG"); return
@@ -89,14 +89,14 @@ async def on_message(message):
 	
 	# Suggestion Command and make sure the sender doesn't have a restricted roles!
 	if vjf.Match_Start(mh,["-suggestion"]) == True and len(vjf.GetRank([message.author],630501693984997447)) < 1:
-		finalmsg = ":notepad_spiral: **Suggestion by <@!" + str(message.author.id) + "> **[*" + vjf.Format_Time(datetime.datetime.now()) + "*] :notepad_spiral:\n" + (str(message.content).replace("-suggestion","").strip())
-		numattach = 0
+		finalMsg = ":notepad_spiral: **Suggestion by <@!" + str(message.author.id) + "> **[*" + vjf.Format_Time(datetime.datetime.now()) + "*] :notepad_spiral:\n" + (str(message.content).replace("-suggestion","").strip())
+		numAttach = 0
 		for v in message.attachments: # Amen negarnere ara
-			numattach = numattach + 1
-			finalmsg = finalmsg + " \nImage " + str(numattach) + ": " + (v.url) # Meg, meg aveltsour negarnere namagin mech
-		getchan1 = vjf.GetChannel(message.guild.channels, discord.ChannelType.text, 629101812208631808) # Pendre "suggestion" channele
-		if getchan1 != None:
-			await getchan1.send(finalmsg)
+			numAttach = numAttach + 1
+			finalMsg = finalMsg + " \nImage " + str(numAttach) + ": " + (v.url) # Meg, meg aveltsour negarnere namagin mech
+		getChan = vjf.GetChannel(message.guild.channels, discord.ChannelType.text, 629101812208631808) # Pendre "suggestion" channele
+		if getChan != None:
+			await getChan.send(finalMsg)
 			await message.delete()
 			return
 	
@@ -113,7 +113,7 @@ async def on_message(message):
 			await message.channel.send(":information_source: **MEMBER INFORMATION** [*" + vjf.Format_Time(datetime.datetime.now()) + "*]\n:busts_in_silhouette: `Name: " + str(v) + " [ID: " + str(v.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(v.created_at) + "`\n:iphone: `On Mobile: " + str(v.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(v.top_role) + "`\n:inbox_tray:`Join Date: " + vjf.Format_Time(v.joined_at) + "`")
 			#else: # Medzavor chene, ese martoun vor chi gernar as hramane sharnagel
 				#await message.channel.send("<@!" + str(message.author.id) + ">, you must be an administrator to use that command!");
-		m = m.replace("<@!" + str(v.id) + ">","").strip() # serpe martigneroon anoonere
+		m = m.replace("<@" + str(v.id) + ">","").strip() # serpe martigneroon anoonere
 	
 	# Sharnag e, minag yete as bot-e tag yegher e!
 	if botTagged == False: return
@@ -131,11 +131,11 @@ async def on_message(message):
 	# Yete yes em, mi sharnager!
 	if message.author == bot.user: return
 	
-	if m == "": await message.channel.send("You didn't type anything! :thinking: :angry:"); return
-	
 	# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	async def vj_PrintMessage(s):
 		await message.channel.send("<@!" + str(message.author.id) + "> " + s)
+	
+	if m == "": await vj_PrintMessage("You didn't type anything! :thinking: :angry:"); return
 	
 	if vjf.Match_Start(m,["hello", "hi", "greetings", "allo"]) == True: await vj_PrintMessage(vjf.PickRandom(["Hello!", "Hi!", "Greetings!", "Allo!"])); return
 	if vjf.Match_Start(m,["how are you", "how you doing", "are you good"]) == True: await vj_PrintMessage(vjf.PickRandom(["I am good! You?", "I am doing great! how about you?", "Good, you?"])); return
@@ -154,10 +154,10 @@ async def on_message(message):
 	# Yete pame chi hasgena:	  "I don't recognize your message! Sorry :frowning:"
 	await vj_PrintMessage(vjf.PickRandom(["ENT.Zombie = true", "Yes you are!", "No you!", "Tell me more!", "Okay?", "Cool story!", "Understandable, have a nice day!", "You wot m8?!", "I was in the chest club.", "If you say so!", "I like trains.", "If you say so...", "I agree.", "I disagree."]))
 
-kakhni_tive = None
+kakhniTive = None
 try:
    os.environ["KAKHNI_TIVE"]
-   kakhni_tive = os.environ["KAKHNI_TIVE"]
+   kakhniTive = os.environ["KAKHNI_TIVE"]
 except KeyError:
-   kakhni_tive = open("kakhni_tive.txt", "r").readline()
-bot.run(kakhni_tive)
+   kakhniTive = open("kakhni_tive.txt", "r").readline()
+bot.run(kakhniTive)
