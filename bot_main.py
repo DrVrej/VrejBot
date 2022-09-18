@@ -7,6 +7,7 @@ import bot_funcs as vjf
 ########## Notes ##########
 # discord.py docs = https://discordpy.readthedocs.io/en/latest/api.html
 # Manual run = python bot_main.py
+#
 # Check for outdated packages = pip list --outdated
 # Update all packages = pip freeze | %{$_.split('==')[0]} | %{pip install --upgrade $_}
 # Update discord.py = pip install --upgrade discord.py
@@ -15,66 +16,92 @@ intents = discord.Intents.all()  # A factory method that creates a Intents with 
 bot = discord.Client(intents=intents)
 non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
 
+########## Server IDs ##########
+idSer_VrejGaming = 390951701655584778
+idSer_Ports = 563046572191907905
+idSer_Hayastan = 567235725104250891
+
 ########## Channel IDs ##########
-idChanVoice_Stat = 562276245174485002 # Fake voice channel (Used for stat display)
-idRole_Member = 390961994645241871
-idRole_Quarantine = 463809123427811328
+idChannel_Stats = {
+	idSer_VrejGaming: 562276245174485002,
+	idSer_Ports: 630267198635638786,
+}
+idChannel_Log = {
+	idSer_VrejGaming: 391189293965508608,
+	idSer_Ports: 564176507044364289,
+	idSer_Hayastan: 753825211312504854,
+}
 
-async def vj_update_stats():
-	# Loop through all the servers that we are in
-	for g in bot.guilds:
-		numEveryone = len(g.members)
-		numBots = len(vjf.GetBots(g.members))
-		# Everyone,     (Everyone - bots - members - quarantine),     Bots
-		chName = "👤" + str(numEveryone) + " 🆕" + str(numEveryone - numBots - len(vjf.GetRank(g.members, idRole_Member)) - len(vjf.GetRank(g.members, idRole_Quarantine))) + " 🤖" + str(numBots)
-		
-		# Get the fake voice channel, make sure it exists and finally update the stats!
-		getChan = vjf.GetChannel(g.channels, discord.ChannelType.voice, idChanVoice_Stat)
-		if getChan != None:
-			await getChan.edit(name = chName, reason = "Updating server stats...")
+########## Role IDs ##########
+idRole_Member = {
+	idSer_VrejGaming: 390961994645241871,
+	idSer_Ports: 1011456428046827602,
+}
 
+# Update the stats channel if the server has one!
+async def vjUpdateStats(g):
+	serverID = g.id
+	numEveryone = len(g.members)
+	numBots = len(vjf.GetBots(g.members))
+	statChan = vjf.GetChannel(g.channels, discord.ChannelType.voice, idChannel_Stats[serverID])
+	
+	if statChan != None: # If this server has a stat channel...
+		textStat = "Unknown Stats!"
+		if serverID == idSer_VrejGaming:
+			# Everyone,     (Everyone - bots - members - quarantine),     Bots
+			textStat = "👤" + str(numEveryone) + " 🆕" + str(numEveryone - numBots - len(vjf.GetRank(g.members, idRole_Member[serverID])) - len(vjf.GetRank(g.members, 463809123427811328))) + " 🤖" + str(numBots)
+		elif serverID == idSer_Ports:
+			# Everyone,     (Everyone - bots - members),     Bots
+			textStat = "👤" + str(numEveryone) + " 🆕" + str(numEveryone - numBots - len(vjf.GetRank(g.members, idRole_Member[serverID]))) + " 🤖" + str(numBots)
+		try:
+			await statChan.edit(name = textStat, reason = "Updating server stats...")
+		except discord.HTTPException as err:
+			print("Error updating stats! (HTTPException)!", err)
+
+richPres_Activity = discord.Activity(name="Type -help for assistance!", state="Assisting People", details="Helping users!", type=discord.ActivityType.playing) #emoji=discord.PartialEmoji(name="U+1F643")
 @bot.event
 async def on_ready():
-	await vj_update_stats()
+	await bot.change_presence(status=discord.Status.online, activity=richPres_Activity)
+	for g in bot.guilds:
+		await vjUpdateStats(g)
 	print("VrejBot Has successfully loaded!")
 
 @bot.event
 async def on_member_join(member):
-	#print(member.avatar_url)
-	#print(member.color)
-	await vj_update_stats()
-	for channel in member.guild.channels:
-		if str(channel) == "bot-log":
-			await channel.send(":inbox_tray: **MEMBER JOINED** [*" + vjf.Format_Time(member.joined_at) + "*]\n:busts_in_silhouette: `Name: " + str(member) + " [ID: " + str(member.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(member.created_at) + "`\n:iphone: `On Mobile: " + str(member.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(member.top_role) + "`")
+	curGuild = member.guild
+	logChan = vjf.GetChannel(curGuild.channels, discord.ChannelType.text, idChannel_Log[curGuild.id])
+	if logChan != None: # If this server has a log channel...
+		await logChan.send(":inbox_tray: **MEMBER JOINED** [*" + vjf.Format_Time(member.joined_at) + "*]\n:busts_in_silhouette: `Name: " + str(member) + " [ID: " + str(member.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(member.created_at) + "`\n:iphone: `On Mobile: " + str(member.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(member.top_role) + "`")
+	await vjUpdateStats(curGuild)
 
 @bot.event
 async def on_member_remove(member):
-	await vj_update_stats()
-	for channel in member.guild.channels:
-		if str(channel) == "bot-log":
-			await channel.send(":outbox_tray: **MEMBER LEFT** [*" + vjf.Format_Time(datetime.datetime.now()) + "*]\n:busts_in_silhouette: `Name: " + str(member) + " [ID: " + str(member.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(member.created_at) + "`\n:iphone: `On Mobile: " + str(member.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(member.top_role) + "`\n:inbox_tray:`Join Date: " + vjf.Format_Time(member.joined_at) + "`")
+	curGuild = member.guild
+	logChan = vjf.GetChannel(curGuild.channels, discord.ChannelType.text, idChannel_Log[curGuild.id])
+	if logChan != None: # If this server has a log channel...
+		await logChan.send(":outbox_tray: **MEMBER LEFT** [*" + vjf.Format_Time(datetime.datetime.now()) + "*]\n:busts_in_silhouette: `Name: " + str(member) + " [ID: " + str(member.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(member.created_at) + "`\n:iphone: `On Mobile: " + str(member.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(member.top_role) + "`\n:inbox_tray:`Join Date: " + vjf.Format_Time(member.joined_at) + "`")
+	await vjUpdateStats(curGuild)
 
 @bot.event
 async def on_member_update(before, after):
 	# before – The Member that updated their profile with the old info. ||| after – The Member that updated their profile with the updated info.
 	if before.roles != after.roles: # Nayir, yete martoun role-ere pokhvetsan
-		await vj_update_stats()
+		await vjUpdateStats(after.guild)
 #	print("Member updated!")
 
 @bot.event
 async def on_message(message):
-	m_org = message.content # Original message
-	m = m_org # The one that will be edited
-	botTagged = False # Yete robote, tag yegher e, sharnage
-	# Unused
-	#isAdmin = vjf.IsAdmin(message.author) # Nayir yete medzavor e
-	getUserInfo = False # Amen tag yeghadz martigneroun masin hamar ge ker e (-u, -user)
+	m_org = message.content # Unedited message
+	m = m_org # Edited message
+	botTagged = False
+	#authorIsAdmin = vjf.IsAdmin(message.author)
+	getUserInfo = False # For user info command
 	
 	# Link hramaner:
 	mh = m_org.strip() # Asiga minag hramaneroun hamar bidi kordzadzvi!
 	for v in message.mentions: # Nayir amen martignere vor tag yegher en
 		mh = mh.replace("<@" + str(v.id) + ">","").strip() # serpe martigneroon anoonere
-	if vjf.Match_Exact(mh,["-help", "-h", "-?"]) == True: await message.channel.send("```ini\n[-sg | -steam] = Steam Group\n[-i | -invite] = Discord Server (Invite link)\n[-vjbase | -vjb | -vj] = VJ Base Workshop Page\n[-vjgit] = VJ Base GitHub Page\n[-hlr] = Half-Life Resurgence GitHub Page\n[-vjof | -vjunof | -vjcol | -vjcollection] = VJ Base Official and Unofficial Addons\n[-server | -sfiles] = DrVrej's Server Files\n[-im] = Broken / Incompatible Addons\n[-suggestion] = Create a suggestion for anything related to this group\n[-u | -user] = Returns the information of the given user(s)\n```"); return
+	if vjf.Match_Exact(mh,["-help", "-h", "-?"]) == True: await message.channel.send("```ini\n[-sg | -steam] = Steam Group\n[-i | -invite] = Discord Server (Invite link)\n[-vjbase | -vjb | -vj] = VJ Base Workshop Page\n[-vjgit] = VJ Base GitHub Page\n[-hlr] = Half-Life Resurgence GitHub Page\n[-vjof | -vjunof | -vjcol | -vjcollection] = VJ Base Official and Unofficial Addons\n[-server | -sfiles] = DrVrej's Server Files\n[-im] = Broken / Incompatible Addons\n[-u | -user] = Returns the information of the given user(s)\n```"); return
 	if vjf.Match_Exact(mh,["-sg", "-steam"]) == True: await message.channel.send("Steam Group: https://steamcommunity.com/groups/vrejgaming"); return
 	if vjf.Match_Exact(mh,["-i", "-invite"]) == True: await message.channel.send("Discord Invite: https://discordapp.com/invite/zwQjrdG"); return
 	if vjf.Match_Exact(mh,["-vjbase", "-vjb", "-vj"]) == True: await message.channel.send("VJ Base Workshop Page: https://steamcommunity.com/sharedfiles/filedetails/?id=131759821"); return
@@ -87,29 +114,29 @@ async def on_message(message):
 	# Oknagan hramaner:
 	if vjf.Match_Start(mh,["-u", "-user",]) == True: getUserInfo = True
 	
+	########## Deprecated -suggestion Command ##########
 	# Suggestion Command and make sure the sender doesn't have a restricted roles!
-	if vjf.Match_Start(mh,["-suggestion"]) == True and len(vjf.GetRank([message.author],630501693984997447)) < 1:
-		finalMsg = ":notepad_spiral: **Suggestion by <@!" + str(message.author.id) + "> **[*" + vjf.Format_Time(datetime.datetime.now()) + "*] :notepad_spiral:\n" + (str(message.content).replace("-suggestion","").strip())
-		numAttach = 0
-		for v in message.attachments: # Amen negarnere ara
-			numAttach = numAttach + 1
-			finalMsg = finalMsg + " \nImage " + str(numAttach) + ": " + (v.url) # Meg, meg aveltsour negarnere namagin mech
-		getChan = vjf.GetChannel(message.guild.channels, discord.ChannelType.text, 629101812208631808) # Pendre "suggestion" channele
-		if getChan != None:
-			await getChan.send(finalMsg)
-			await message.delete()
-			return
-	
-	# If the message is from VrejBot, and its the suggestion reply, then tag it with approve/disapprove emojis
-	if message.author == bot.user and vjf.Match_Any(m_org,["Suggestion by"]) == True:
-		await message.add_reaction("\U00002705")
-		await message.add_reaction("\U0000274c")
+	# if vjf.Match_Start(mh,["-suggestion"]) == True and len(vjf.GetRank([message.author],630501693984997447)) < 1:
+	# 	finalMsg = ":notepad_spiral: **Suggestion by <@!" + str(message.author.id) + "> **[*" + vjf.Format_Time(datetime.datetime.now()) + "*] :notepad_spiral:\n" + (str(message.content).replace("-suggestion","").strip())
+	# 	numAttach = 0
+	# 	for v in message.attachments: # Amen negarnere ara
+	# 		numAttach = numAttach + 1
+	# 		finalMsg = finalMsg + " \nImage " + str(numAttach) + ": " + (v.url) # Meg, meg aveltsour negarnere namagin mech
+	# 	getChan = vjf.GetChannel(message.guild.channels, discord.ChannelType.text, 629101812208631808) # Pendre "suggestion" channele
+	# 	if getChan != None:
+	# 		await getChan.send(finalMsg)
+	# 		await message.delete()
+	# 		return
+	# # If the message is from VrejBot, and its the suggestion reply, then tag it with approve/disapprove emojis
+	# if message.author == bot.user and vjf.Match_Any(m_org,["Suggestion by"]) == True:
+	# 	await message.add_reaction("\U00002705")
+	# 	await message.add_reaction("\U0000274c")
+	####################################################
 	
 	for v in message.mentions: # Nayir amen martignere vor tag yegher en
 		if v == bot.user: # Yete robotne, gerna sharnagel
 			botTagged = True
 		if getUserInfo == True:
-			#if isAdmin == True: # Yete medzavor e, sharnag e
 			await message.channel.send(":information_source: **MEMBER INFORMATION** [*" + vjf.Format_Time(datetime.datetime.now()) + "*]\n:busts_in_silhouette: `Name: " + str(v) + " [ID: " + str(v.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(v.created_at) + "`\n:iphone: `On Mobile: " + str(v.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(v.top_role) + "`\n:inbox_tray:`Join Date: " + vjf.Format_Time(v.joined_at) + "`")
 			#else: # Medzavor chene, ese martoun vor chi gernar as hramane sharnagel
 				#await message.channel.send("<@!" + str(message.author.id) + ">, you must be an administrator to use that command!");
@@ -158,6 +185,6 @@ kakhni_tive = None
 try:
    os.environ["KAKHNI_TIVE"]
    kakhni_tive = os.environ["KAKHNI_TIVE"]
-except KeyError:
+except:
    kakhni_tive = open("kakhni_tive.txt", "r").readline()
 bot.run(kakhni_tive)
