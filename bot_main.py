@@ -29,7 +29,7 @@ idChannel_Stats = {
 idChannel_Log = {
 	idSer_VrejGaming: 391189293965508608,
 	idSer_Ports: 564176507044364289,
-	idSer_Hayastan: 753825211312504854,
+	#idSer_Hayastan: 753825211312504854,
 }
 
 ########## Role IDs ##########
