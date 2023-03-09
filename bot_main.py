@@ -43,20 +43,21 @@ async def vjUpdateStats(g):
 	serverID = g.id
 	numEveryone = len(g.members)
 	numBots = len(vjf.GetBots(g.members))
-	statChan = vjf.GetChannel(g.channels, discord.ChannelType.voice, idChannel_Stats[serverID])
-	
-	if statChan != None: # If this server has a stat channel...
-		textStat = "Unknown Stats!"
-		if serverID == idSer_VrejGaming:
-			# Everyone,     (Everyone - bots - members - quarantine),     Bots
-			textStat = "👤" + str(numEveryone) + " 🆕" + str(numEveryone - numBots - len(vjf.GetRank(g.members, idRole_Member[serverID])) - len(vjf.GetRank(g.members, 463809123427811328))) + " 🤖" + str(numBots)
-		elif serverID == idSer_Ports:
-			# Everyone,     (Everyone - bots - members),     Bots
-			textStat = "👤" + str(numEveryone) + " 🆕" + str(numEveryone - numBots - len(vjf.GetRank(g.members, idRole_Member[serverID]))) + " 🤖" + str(numBots)
-		try:
-			await statChan.edit(name = textStat, reason = "Updating server stats...")
-		except discord.HTTPException as err:
-			print("Error updating stats! (HTTPException)!", err)
+	if serverID in idChannel_Stats: # Make sure the key exists in the dictionary before attempting to look it up!
+		statChan = vjf.GetChannel(g.channels, discord.ChannelType.voice, idChannel_Stats[serverID])
+		
+		if statChan != None: # If this server has a stat channel...
+			textStat = "Unknown Stats!"
+			if serverID == idSer_VrejGaming:
+				# Everyone,     (Everyone - bots - members - quarantine),     Bots
+				textStat = "👤" + str(numEveryone) + " 🆕" + str(numEveryone - numBots - len(vjf.GetRank(g.members, idRole_Member[serverID])) - len(vjf.GetRank(g.members, 463809123427811328))) + " 🤖" + str(numBots)
+			elif serverID == idSer_Ports:
+				# Everyone,     (Everyone - bots - members),     Bots
+				textStat = "👤" + str(numEveryone) + " 🆕" + str(numEveryone - numBots - len(vjf.GetRank(g.members, idRole_Member[serverID]))) + " 🤖" + str(numBots)
+			try:
+				await statChan.edit(name = textStat, reason = "Updating server stats...")
+			except discord.HTTPException as err:
+				print("Error updating stats! (HTTPException)!", err)
 
 richPres_Activity = discord.Activity(name="Type -help for assistance!", state="Assisting People", details="Helping users!", type=discord.ActivityType.playing) #emoji=discord.PartialEmoji(name="U+1F643")
 @bot.event
