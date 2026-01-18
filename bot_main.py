@@ -19,7 +19,6 @@ non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
 ########## Server IDs ##########
 idSer_VrejGaming = 390951701655584778
 idSer_Ports = 563046572191907905
-idSer_Hayastan = 567235725104250891
 
 ########## Channel IDs ##########
 idChannel_Stats = {
@@ -29,7 +28,6 @@ idChannel_Stats = {
 idChannel_Log = {
 	idSer_VrejGaming: 391189293965508608,
 	idSer_Ports: 564176507044364289,
-	#idSer_Hayastan: 753825211312504854,
 }
 
 ########## Role IDs ##########
