@@ -47,8 +47,8 @@ async def vjUpdateStats(g):
 		if statChan != None: # If this server has a stat channel...
 			textStat = "Unknown Stats!"
 			if serverID == idSer_VrejGaming:
-				# Everyone,     (Everyone - bots - members - quarantine),     Bots
-				textStat = "👤" + str(numEveryone) + " 🆕" + str(numEveryone - numBots - len(vjf.GetRank(g.members, idRole_Member[serverID])) - len(vjf.GetRank(g.members, 463809123427811328))) + " 🤖" + str(numBots)
+				# Everyone,     Verified,     (Everyone - bots - members - quarantine - verified),     Bots
+				textStat = "👤" + str(numEveryone) + " ⛓️" + str(len(vjf.GetRank(g.members, 979356390474780672))) + " 🆕" + str(numEveryone - numBots - len(vjf.GetRank(g.members, idRole_Member[serverID])) - len(vjf.GetRank(g.members, 463809123427811328)) - len(vjf.GetRank(g.members, 979356390474780672))) + " 🤖" + str(numBots)
 			elif serverID == idSer_Ports:
 				# Everyone,     (Everyone - bots - members),     Bots
 				textStat = "👤" + str(numEveryone) + " 🆕" + str(numEveryone - numBots - len(vjf.GetRank(g.members, idRole_Member[serverID]))) + " 🤖" + str(numBots)
@@ -57,13 +57,19 @@ async def vjUpdateStats(g):
 			except discord.HTTPException as err:
 				print("Error updating stats! (HTTPException)!", err)
 
-richPres_Activity = discord.Activity(name="Type -help for assistance!", state="Assisting People", details="Helping users!", type=discord.ActivityType.playing) #emoji=discord.PartialEmoji(name="U+1F643")
 @bot.event
 async def on_ready():
-	await bot.change_presence(status=discord.Status.online, activity=richPres_Activity)
+	await bot.change_presence(
+		status=discord.Status.online,
+		activity=discord.Activity(
+			name="💬 Need help? Type -help",
+			state=f"Serving {len(bot.guilds)} servers!",
+			type=discord.ActivityType.competing
+		)
+    )
 	for g in bot.guilds:
 		await vjUpdateStats(g)
-	print("VrejBot Has successfully loaded!")
+	print("VrejBot has successfully loaded!")
 
 @bot.event
 async def on_member_join(member):
