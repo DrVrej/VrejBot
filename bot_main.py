@@ -12,28 +12,28 @@ import bot_funcs as vjf
 # Update all packages = pip freeze | %{$_.split('==')[0]} | %{pip install --upgrade $_}
 # Update discord.py = pip install --upgrade discord.py
 
-intents = discord.Intents.all()  # A factory method that creates a Intents with everything enabled.
+intents = discord.Intents.all()  # A factory method that creates a Intents with everything enabled
 bot = discord.Client(intents=intents)
 non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
 
 ########## Server IDs ##########
-idSer_VrejGaming = 390951701655584778
-idSer_Ports = 563046572191907905
+SERVER_VREJGAMING = 390951701655584778
+SERVER_PORTS = 563046572191907905
 
 ########## Channel IDs ##########
 idChannel_Stats = {
-	idSer_VrejGaming: 562276245174485002,
-	idSer_Ports: 630267198635638786,
+	SERVER_VREJGAMING: 562276245174485002,
+	SERVER_PORTS: 630267198635638786,
 }
 idChannel_Log = {
-	idSer_VrejGaming: 391189293965508608,
-	idSer_Ports: 564176507044364289,
+	SERVER_VREJGAMING: 391189293965508608,
+	SERVER_PORTS: 564176507044364289,
 }
 
 ########## Role IDs ##########
 idRole_Member = {
-	idSer_VrejGaming: 390961994645241871,
-	idSer_Ports: 1011456428046827602,
+	SERVER_VREJGAMING: 390961994645241871,
+	SERVER_PORTS: 1011456428046827602,
 }
 
 # Update the stats channel if the server has one!
@@ -43,15 +43,14 @@ async def vjUpdateStats(g):
 	numBots = len(vjf.GetBots(g.members))
 	if serverID in idChannel_Stats: # Make sure the key exists in the dictionary before attempting to look it up!
 		statChan = vjf.GetChannel(g.channels, discord.ChannelType.voice, idChannel_Stats[serverID])
-		
 		if statChan != None: # If this server has a stat channel...
 			textStat = "Unknown Stats!"
-			if serverID == idSer_VrejGaming:
+			if serverID == SERVER_VREJGAMING:
 				# Everyone,     Verified,     (Everyone - bots - members - quarantine - verified),     Bots
-				textStat = "👤" + str(numEveryone) + " ⛓️" + str(len(vjf.GetRank(g.members, 979356390474780672))) + " 🆕" + str(numEveryone - numBots - len(vjf.GetRank(g.members, idRole_Member[serverID])) - len(vjf.GetRank(g.members, 463809123427811328)) - len(vjf.GetRank(g.members, 979356390474780672))) + " 🤖" + str(numBots)
-			elif serverID == idSer_Ports:
+				textStat = f"👥{numEveryone} 📦{len(vjf.GetRank(g.members, 979356390474780672))} 🚪{numEveryone - numBots - len(vjf.GetRank(g.members, idRole_Member[serverID])) - len(vjf.GetRank(g.members, 463809123427811328)) - len(vjf.GetRank(g.members, 979356390474780672))} 🤖{numBots}"
+			elif serverID == SERVER_PORTS:
 				# Everyone,     (Everyone - bots - members),     Bots
-				textStat = "👤" + str(numEveryone) + " 🆕" + str(numEveryone - numBots - len(vjf.GetRank(g.members, idRole_Member[serverID]))) + " 🤖" + str(numBots)
+				textStat = f"👥{numEveryone} 🚪{numEveryone - numBots - len(vjf.GetRank(g.members, idRole_Member[serverID]))} 🤖{numBots}"
 			try:
 				await statChan.edit(name = textStat, reason = "Updating server stats...")
 			except discord.HTTPException as err:
@@ -108,13 +107,13 @@ async def on_message(message):
 	for v in message.mentions: # Nayir amen martignere vor tag yegher en
 		mh = mh.replace("<@" + str(v.id) + ">","").strip() # serpe martigneroon anoonere
 	if vjf.Match_Exact(mh,["-help", "-h", "-?"]) == True:
-		if serverID == idSer_VrejGaming:
+		if serverID == SERVER_VREJGAMING:
 			await message.channel.send("```ini\n[-sg | -steam] = Steam Group\n[-i | -invite] = Discord Server (Invite link)\n[-vjbase | -vjb | -vj] = VJ Base Workshop Page\n[-vjgit] = VJ Base GitHub Page\n[-hlr] = Half-Life Resurgence GitHub Page\n[-vjof | -vjunof | -vjcol | -vjcollection] = VJ Base Official and Unofficial Addons\n[-server | -sfiles] = DrVrej's Server Files\n[-im] = Broken / Incompatible Addons\n[-u | -user] = Returns the information of the given user(s)\n```")
 		else:
 			await message.channel.send("```ini\n[-u | -user] = Returns the information of the given user(s)\n```")
 		return
 	# VrejGaming commands
-	if serverID == idSer_VrejGaming:
+	if serverID == SERVER_VREJGAMING:
 		if vjf.Match_Exact(mh,["-sg", "-steam"]) == True: await message.channel.send("Steam Group: https://steamcommunity.com/groups/vrejgaming"); return
 		if vjf.Match_Exact(mh,["-i", "-invite"]) == True: await message.channel.send("Discord Invite: https://discordapp.com/invite/zwQjrdG"); return
 		if vjf.Match_Exact(mh,["-vjbase", "-vjb", "-vj"]) == True: await message.channel.send("VJ Base Workshop Page: https://steamcommunity.com/sharedfiles/filedetails/?id=131759821"); return
@@ -189,7 +188,7 @@ async def on_message(message):
 	if vjf.Match_Any(m,["armenia", "hayastan", "armo", "🇦🇲"]) == True: await vj_PrintMessage("Long Live Armenia! :flag_am:"); return
 	if vjf.Match_Any(m,["happy", u"\U0001F600", u"\U0001F603", u"\U0001F604", u"\U0001F601", u"\U000FE332", u"\U0001F60A", u"\U0001F642", u"\u263A", u"\U0001F607", u"\U0001F643"]) == True: await vj_PrintMessage(vjf.PickRandom([u"\U0001F600", u"\U0001F603", u"\U0001F604", u"\U0001F601", u"\U000FE332", u"\U0001F60A", u"\U0001F642", u"\U000FE336", u"\U0001F607", u"\U0001F643"])); return
 	
-	if serverID == idSer_VrejGaming:
+	if serverID == SERVER_VREJGAMING:
 		if vjf.Match_Any(m,["tell me a fact", "fact", "say a fact", "tell a fact", "say fact", "tell fact", "fun fact"]) == True: await vj_PrintMessage("Fun Fact! " + vjf.PickRandom(["Armenia is the first Christian nation!", "VJ Base stands for Vrej Base.", "VrejGaming was originally made on May 8th, 2011!", "VJ Base was originally created during Garry's Mod 12!", "Armenia's anthem is 'Mer Hayrenik', which stands for 'Our Fatherland'", "Armenia is one of the 10 ancient nations that still exists!", "Vrej in Armenian means Vengeance or Revenge.", "Armenian language has its own unique alphabet. grammar and sentence system!", "VJ Base 2.0 was released on January 1, 2015!", "VJ Base was the first addon for Garry's Mod to bring extensive customization. Soon after release, many addons began to follow the idea of customization.", "Half-Life Resurgence is the largest SNPC pack made by DrVrej!"])); return
 	
 	# Yete pame chi hasgena:	  "I don't recognize your message! Sorry :frowning:"
