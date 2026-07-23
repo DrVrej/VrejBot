@@ -17,7 +17,6 @@ import bot_funcs as vjf
 
 bot = discord.Client(intents=discord.Intents.all())  # A factory method that creates a Intents with everything enabled
 logger = logging.getLogger("vrejbot")
-non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xFFFD)
 
 ########## Server IDs ##########
 SERVER_VREJGAMING = 390951701655584778
@@ -117,7 +116,7 @@ async def on_message(message):
 		mh = mh.replace(f"<@{v.id}>", "").strip()  # serpe martigneroon anoonere
 	if vjf.Match_Exact(mh, ["-help", "-h", "-?"]) == True:
 		if serverID == SERVER_VREJGAMING:
-			await message.channel.send("```ini\n[-sg | -steam] = Steam Group\n[-i | -invite] = Discord Server (Invite link)\n[-vjbase | -vjb | -vj] = VJ Base Workshop Page\n[-vjgit] = VJ Base GitHub Page\n[-hlr] = Half-Life Resurgence GitHub Page\n[-vjof | -vjunof | -vjcol | -vjcollection] = VJ Base Official and Unofficial Addons\n[-server | -sfiles] = DrVrej's Server Files\n[-im] = Broken / Incompatible Addons\n[-u | -user] = Returns the information of the given user(s)\n```")
+			await message.channel.send("```ini\n[-sg | -steam] = Steam Group\n[-i | -invite] = Discord Server (Invite link)\n[-vjbase | -vjb | -vj] = VJ Base Workshop Page\n[-vjgit] = VJ Base GitHub Page\n[-hlr] = Half-Life Resurgence GitHub Page\n[-server | -sfiles] = DrVrej's Server Files\n[-im] = Broken / Incompatible Addons\n[-u | -user] = Returns the information of the given user(s)\n```")
 		else:
 			await message.channel.send("```ini\n[-u | -user] = Returns the information of the given user(s)\n```")
 		return
@@ -128,7 +127,6 @@ async def on_message(message):
 		if vjf.Match_Exact(mh, ["-i", "-invite"]) == True: await message.channel.send("Discord Invite: https://discordapp.com/invite/zwQjrdG"); return
 		if vjf.Match_Exact(mh, ["-vjbase", "-vjb", "-vj"]) == True: await message.channel.send("VJ Base Workshop Page: https://steamcommunity.com/sharedfiles/filedetails/?id=131759821"); return
 		if vjf.Match_Exact(mh, ["-vjgit"]) == True: await message.channel.send("VJ Base GitHub Page: https://github.com/DrVrej/VJ-Base"); return
-		if vjf.Match_Exact(mh, ["-vjof", "-vjunof", "-vjcol", "-vjcollection"]) == True: await message.channel.send("VJ Base Official and Unofficial Addons: https://steamcommunity.com/sharedfiles/filedetails/?id=1080924955"); return
 		if vjf.Match_Exact(mh, ["-server", "-sfiles"]) == True: await message.channel.send("DrVrej's Server Files: https://steamcommunity.com/sharedfiles/filedetails/?id=157267702"); return
 		if vjf.Match_Exact(mh, ["-im"]) == True: await message.channel.send("Broken / Incompatible Addons: https://steamcommunity.com/sharedfiles/filedetails/?id=1129493108"); return
 		if vjf.Match_Exact(mh, ["-hlr"]) == True: await message.channel.send("Half-Life Resurgence (Base): https://github.com/VJ-HLR-Developers/Half-Life-Resurgence"); return
@@ -137,25 +135,6 @@ async def on_message(message):
 	# Commands for all servers
 	if vjf.Match_Start(mh, ["-u", "-user"]) == True:
 		getUserInfo = True
-
-	########## Deprecated -suggestion Command ##########
-	# Suggestion Command and make sure the sender doesn't have a restricted roles!
-	# if vjf.Match_Start(mh,["-suggestion"]) == True and len(vjf.GetRank([message.author],630501693984997447)) < 1:
-	# 	finalMsg = ":notepad_spiral: **Suggestion by <@!" + str(message.author.id) + "> **[*" + vjf.Format_Time(datetime.datetime.now()) + "*] :notepad_spiral:\n" + (str(message.content).replace("-suggestion","").strip())
-	# 	numAttach = 0
-	# 	for v in message.attachments: # Amen negarnere ara
-	# 		numAttach = numAttach + 1
-	# 		finalMsg = finalMsg + " \nImage " + str(numAttach) + ": " + (v.url) # Meg, meg aveltsour negarnere namagin mech
-	# 	getChan = vjf.GetChannel(message.guild.channels, discord.ChannelType.text, 629101812208631808) # Pendre "suggestion" channele
-	# 	if getChan != None:
-	# 		await getChan.send(finalMsg)
-	# 		await message.delete()
-	# 		return
-	# # If the message is from VrejBot, and its the suggestion reply, then tag it with approve/disapprove emojis
-	# if message.author == bot.user and vjf.Match_Any(m_org,["Suggestion by"]) == True:
-	# 	await message.add_reaction("\U00002705")
-	# 	await message.add_reaction("\U0000274c")
-	####################################################
 
 	for v in message.mentions:  # Nayir amen martignere vor tag yegher en
 		if v == bot.user:  # Yete robotne, gerna sharnagel
@@ -172,13 +151,8 @@ async def on_message(message):
 
 	logger.info("-----------------------------")
 	logger.info(f"Author: {message.author} [{vjf.Format_Time(message.created_at)}]")
-
-	try:
-		print(f"Message Arrived: {m}")  # Make sure it's a unrecognized letter
-		m = m.lower()
-	except UnicodeEncodeError:
-		m = m.translate(non_bmp_map)
-		logger.info(f"unrecognized Message Arrived: {m}")
+	logger.info(f"Message Arrived: {m}")  # Make sure it's a unrecognized letter
+	m = m.lower()
 
 	# Yete yes em, mi sharnager!
 	if message.author == bot.user:
