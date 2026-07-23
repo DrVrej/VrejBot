@@ -37,14 +37,15 @@ idRole_Member = {
 	SERVER_PORTS: 1011456428046827602,
 }
 
+
 # Update the stats channel if the server has one!
 async def vjUpdateStats(g):
 	serverID = g.id
 	numEveryone = len(g.members)
 	numBots = len(vjf.GetBots(g.members))
-	if serverID in idChannel_Stats: # Make sure the key exists in the dictionary before attempting to look it up!
+	if serverID in idChannel_Stats:  # Make sure the key exists in the dictionary before attempting to look it up!
 		statChan = vjf.GetChannel(g.channels, discord.ChannelType.voice, idChannel_Stats[serverID])
-		if statChan != None: # If this server has a stat channel...
+		if statChan != None:  # If this server has a stat channel...
 			textStat = "Unknown Stats!"
 			if serverID == SERVER_VREJGAMING:
 				# Everyone,     Verified,     (Everyone - bots - members - quarantine - verified),     Bots
@@ -53,9 +54,10 @@ async def vjUpdateStats(g):
 				# Everyone,     (Everyone - bots - members),     Bots
 				textStat = f"👥{numEveryone} 🚪{numEveryone - numBots - len(vjf.GetRank(g.members, idRole_Member[serverID]))} 🤖{numBots}"
 			try:
-				await statChan.edit(name = textStat, reason = "Updating server stats...")
+				await statChan.edit(name=textStat, reason="Updating server stats...")
 			except discord.HTTPException as err:
 				print("Error updating stats! (HTTPException)!", err)
+
 
 @bot.event
 async def on_ready():
@@ -65,49 +67,53 @@ async def on_ready():
 			name="💬 Need help? Type -help",
 			state=f"Serving {len(bot.guilds)} servers!",
 			type=discord.ActivityType.competing,
-		)
-    )
+		),
+	)
 	for g in bot.guilds:
 		await vjUpdateStats(g)
 	print("VrejBot has successfully loaded!")
+
 
 @bot.event
 async def on_member_join(member):
 	curGuild = member.guild
 	logChan = vjf.GetChannel(curGuild.channels, discord.ChannelType.text, idChannel_Log[curGuild.id])
-	if logChan != None: # If this server has a log channel...
+	if logChan != None:  # If this server has a log channel...
 		await logChan.send(":inbox_tray: **MEMBER JOINED** [*" + vjf.Format_Time(member.joined_at) + "*]\n:busts_in_silhouette: `Name: " + str(member) + " [ID: " + str(member.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(member.created_at) + "`\n:iphone: `On Mobile: " + str(member.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(member.top_role) + "`")
 	await vjUpdateStats(curGuild)
+
 
 @bot.event
 async def on_member_remove(member):
 	curGuild = member.guild
 	logChan = vjf.GetChannel(curGuild.channels, discord.ChannelType.text, idChannel_Log[curGuild.id])
-	if logChan != None: # If this server has a log channel...
+	if logChan != None:  # If this server has a log channel...
 		await logChan.send(":outbox_tray: **MEMBER LEFT** [*" + vjf.Format_Time(datetime.datetime.now()) + "*]\n:busts_in_silhouette: `Name: " + str(member) + " [ID: " + str(member.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(member.created_at) + "`\n:iphone: `On Mobile: " + str(member.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(member.top_role) + "`\n:inbox_tray:`Join Date: " + vjf.Format_Time(member.joined_at) + "`")
 	await vjUpdateStats(curGuild)
 
+
 @bot.event
 async def on_member_update(before, after):
+	# print("Member updated!")
 	# before – The Member that updated their profile with the old info. ||| after – The Member that updated their profile with the updated info.
-	if before.roles != after.roles: # Nayir, yete martoun role-ere pokhvetsan
+	if before.roles != after.roles:  # Nayir, yete martoun role-ere pokhvetsan
 		await vjUpdateStats(after.guild)
-#	print("Member updated!")
+
 
 @bot.event
 async def on_message(message):
 	serverID = message.guild
-	m_org = message.content # Unedited message
-	m = m_org # Edited message
+	m_org = message.content  # Unedited message
+	m = m_org  # Edited message
 	botTagged = False
-	#authorIsAdmin = vjf.IsAdmin(message.author)
-	getUserInfo = False # For user info command
-	
+	# authorIsAdmin = vjf.IsAdmin(message.author)
+	getUserInfo = False  # For user info command
+
 	# Link hramaner:
-	mh = m_org.strip() # Asiga minag hramaneroun hamar bidi kordzadzvi!
-	for v in message.mentions: # Nayir amen martignere vor tag yegher en
-		mh = mh.replace(f"<@{v.id}>", "").strip() # serpe martigneroon anoonere
-	if vjf.Match_Exact(mh,["-help", "-h", "-?"]) == True:
+	mh = m_org.strip()  # Asiga minag hramaneroun hamar bidi kordzadzvi!
+	for v in message.mentions:  # Nayir amen martignere vor tag yegher en
+		mh = mh.replace(f"<@{v.id}>", "").strip()  # serpe martigneroon anoonere
+	if vjf.Match_Exact(mh, ["-help", "-h", "-?"]) == True:
 		if serverID == SERVER_VREJGAMING:
 			await message.channel.send("```ini\n[-sg | -steam] = Steam Group\n[-i | -invite] = Discord Server (Invite link)\n[-vjbase | -vjb | -vj] = VJ Base Workshop Page\n[-vjgit] = VJ Base GitHub Page\n[-hlr] = Half-Life Resurgence GitHub Page\n[-vjof | -vjunof | -vjcol | -vjcollection] = VJ Base Official and Unofficial Addons\n[-server | -sfiles] = DrVrej's Server Files\n[-im] = Broken / Incompatible Addons\n[-u | -user] = Returns the information of the given user(s)\n```")
 		else:
@@ -115,19 +121,21 @@ async def on_message(message):
 		return
 	# VrejGaming commands
 	if serverID == SERVER_VREJGAMING:
-		if vjf.Match_Exact(mh,["-sg", "-steam"]) == True: await message.channel.send("Steam Group: https://steamcommunity.com/groups/vrejgaming"); return
-		if vjf.Match_Exact(mh,["-i", "-invite"]) == True: await message.channel.send("Discord Invite: https://discordapp.com/invite/zwQjrdG"); return
-		if vjf.Match_Exact(mh,["-vjbase", "-vjb", "-vj"]) == True: await message.channel.send("VJ Base Workshop Page: https://steamcommunity.com/sharedfiles/filedetails/?id=131759821"); return
-		if vjf.Match_Exact(mh,["-vjgit"]) == True: await message.channel.send("VJ Base GitHub Page: https://github.com/DrVrej/VJ-Base"); return
-		if vjf.Match_Exact(mh,["-vjof", "-vjunof", "-vjcol", "-vjcollection"]) == True: await message.channel.send("VJ Base Official and Unofficial Addons: https://steamcommunity.com/sharedfiles/filedetails/?id=1080924955"); return
-		if vjf.Match_Exact(mh,["-server", "-sfiles"]) == True: await message.channel.send("DrVrej's Server Files: https://steamcommunity.com/sharedfiles/filedetails/?id=157267702"); return
-		if vjf.Match_Exact(mh,["-im"]) == True: await message.channel.send("Broken / Incompatible Addons: https://steamcommunity.com/sharedfiles/filedetails/?id=1129493108"); return
-		if vjf.Match_Exact(mh,["-hlr"]) == True: await message.channel.send("Half-Life Resurgence (Base): https://github.com/VJ-HLR-Developers/Half-Life-Resurgence"); return
-	
+		# fmt: off
+		if vjf.Match_Exact(mh, ["-sg", "-steam"]) == True: await message.channel.send("Steam Group: https://steamcommunity.com/groups/vrejgaming"); return
+		if vjf.Match_Exact(mh, ["-i", "-invite"]) == True: await message.channel.send("Discord Invite: https://discordapp.com/invite/zwQjrdG"); return
+		if vjf.Match_Exact(mh, ["-vjbase", "-vjb", "-vj"]) == True: await message.channel.send("VJ Base Workshop Page: https://steamcommunity.com/sharedfiles/filedetails/?id=131759821"); return
+		if vjf.Match_Exact(mh, ["-vjgit"]) == True: await message.channel.send("VJ Base GitHub Page: https://github.com/DrVrej/VJ-Base"); return
+		if vjf.Match_Exact(mh, ["-vjof", "-vjunof", "-vjcol", "-vjcollection"]) == True: await message.channel.send("VJ Base Official and Unofficial Addons: https://steamcommunity.com/sharedfiles/filedetails/?id=1080924955"); return
+		if vjf.Match_Exact(mh, ["-server", "-sfiles"]) == True: await message.channel.send("DrVrej's Server Files: https://steamcommunity.com/sharedfiles/filedetails/?id=157267702"); return
+		if vjf.Match_Exact(mh, ["-im"]) == True: await message.channel.send("Broken / Incompatible Addons: https://steamcommunity.com/sharedfiles/filedetails/?id=1129493108"); return
+		if vjf.Match_Exact(mh, ["-hlr"]) == True: await message.channel.send("Half-Life Resurgence (Base): https://github.com/VJ-HLR-Developers/Half-Life-Resurgence"); return
+		# fmt: on
+
 	# Commands for all servers
 	if vjf.Match_Start(mh, ["-u", "-user"]) == True:
 		getUserInfo = True
-	
+
 	########## Deprecated -suggestion Command ##########
 	# Suggestion Command and make sure the sender doesn't have a restricted roles!
 	# if vjf.Match_Start(mh,["-suggestion"]) == True and len(vjf.GetRank([message.author],630501693984997447)) < 1:
@@ -146,40 +154,42 @@ async def on_message(message):
 	# 	await message.add_reaction("\U00002705")
 	# 	await message.add_reaction("\U0000274c")
 	####################################################
-	
-	for v in message.mentions: # Nayir amen martignere vor tag yegher en
-		if v == bot.user: # Yete robotne, gerna sharnagel
+
+	for v in message.mentions:  # Nayir amen martignere vor tag yegher en
+		if v == bot.user:  # Yete robotne, gerna sharnagel
 			botTagged = True
 		if getUserInfo == True:
 			await message.channel.send(":information_source: **MEMBER INFORMATION** [*" + vjf.Format_Time(datetime.datetime.now()) + "*]\n:busts_in_silhouette: `Name: " + str(v) + " [ID: " + str(v.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(v.created_at) + "`\n:iphone: `On Mobile: " + str(v.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(v.top_role) + "`\n:inbox_tray:`Join Date: " + vjf.Format_Time(v.joined_at) + "`")
-			#else: # Medzavor chene, ese martoun vor chi gernar as hramane sharnagel
-				#await message.channel.send("<@!" + str(message.author.id) + ">, you must be an administrator to use that command!");
-		m = m.replace("<@" + str(v.id) + ">","").strip() # serpe martigneroon anoonere
-	
+			# else: # Medzavor chene, ese martoun vor chi gernar as hramane sharnagel
+			# await message.channel.send("<@!" + str(message.author.id) + ">, you must be an administrator to use that command!");
+		m = m.replace("<@" + str(v.id) + ">", "").strip()  # serpe martigneroon anoonere
+
 	# Sharnag e, minag yete as bot-e tag yegher e!
-	if botTagged == False: return
+	if botTagged == False:
+		return
 
 	print("-----------------------------")
 	print(f"Author: {message.author} [{vjf.Format_Time(message.created_at)}]")
-	
+
 	try:
-		print(f"Message Arrived: {m}") # Make sure it's a unrecognized letter
+		print(f"Message Arrived: {m}")  # Make sure it's a unrecognized letter
 		m = m.lower()
 	except UnicodeEncodeError:
 		m = m.translate(non_bmp_map)
 		print(f"unrecognized Message Arrived: {m}")
 
 	# Yete yes em, mi sharnager!
-	if message.author == bot.user: return
-	
+	if message.author == bot.user:
+		return
+
 	# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	async def vj_PrintMessage(s):
 		await message.channel.send("<@!" + str(message.author.id) + "> " + s)
-	
+
 	if m == "":
 		await vj_PrintMessage("You didn't type anything! :thinking: :angry:")
 		return
-	
+
 	if vjf.Match_Start(m, ["hello", "hi", "greetings", "allo"]) == True:
 		await vj_PrintMessage(vjf.PickRandom(["Hello!", "Hi!", "Greetings!", "Allo!"]))
 		return
@@ -217,6 +227,7 @@ async def on_message(message):
 
 	# Yete pame chi hasgena:	  "I don't recognize your message! Sorry :frowning:"
 	await vj_PrintMessage(vjf.PickRandom(["ENT.Zombie = true", "Yes you are!", "No you!", "Tell me more!", "Okay?", "Cool story!", "Understandable, have a nice day!", "You wot m8?!", "I was in the chest club.", "If you say so!", "I like trains.", "If you say so...", "I agree.", "I disagree."]))
+
 
 kakhni_tive = None
 try:
