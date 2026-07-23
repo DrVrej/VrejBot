@@ -1,4 +1,5 @@
 import datetime
+import logging
 import os
 import sys
 
@@ -12,9 +13,10 @@ import bot_funcs as vjf
 # Check for outdated packages = pip list --outdated
 # Update all packages = pip freeze | %{$_.split('==')[0]} | %{pip install --upgrade $_}
 # Update discord.py = pip install --upgrade discord.py
+###########################
 
-intents = discord.Intents.all()  # A factory method that creates a Intents with everything enabled
-bot = discord.Client(intents=intents)
+bot = discord.Client(intents=discord.Intents.all())  # A factory method that creates a Intents with everything enabled
+logger = logging.getLogger("vrejbot")
 non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xFFFD)
 
 ########## Server IDs ##########
@@ -71,7 +73,7 @@ async def on_ready():
 	)
 	for g in bot.guilds:
 		await vjUpdateStats(g)
-	print("VrejBot has successfully loaded!")
+	logger.info("initialized successfully!")
 
 
 @bot.event
@@ -94,7 +96,7 @@ async def on_member_remove(member):
 
 @bot.event
 async def on_member_update(before, after):
-	# print("Member updated!")
+	# logger.info("Member updated!")
 	# before – The Member that updated their profile with the old info. ||| after – The Member that updated their profile with the updated info.
 	if before.roles != after.roles:  # Nayir, yete martoun role-ere pokhvetsan
 		await vjUpdateStats(after.guild)
@@ -168,15 +170,15 @@ async def on_message(message):
 	if botTagged == False:
 		return
 
-	print("-----------------------------")
-	print(f"Author: {message.author} [{vjf.Format_Time(message.created_at)}]")
+	logger.info("-----------------------------")
+	logger.info(f"Author: {message.author} [{vjf.Format_Time(message.created_at)}]")
 
 	try:
 		print(f"Message Arrived: {m}")  # Make sure it's a unrecognized letter
 		m = m.lower()
 	except UnicodeEncodeError:
 		m = m.translate(non_bmp_map)
-		print(f"unrecognized Message Arrived: {m}")
+		logger.info(f"unrecognized Message Arrived: {m}")
 
 	# Yete yes em, mi sharnager!
 	if message.author == bot.user:
@@ -235,4 +237,4 @@ try:
 	kakhni_tive = os.environ["KAKHNI_TIVE"]
 except:
 	kakhni_tive = open("kakhni_tive.txt").readline()
-bot.run(kakhni_tive)
+bot.run(kakhni_tive, root_logger=True)
