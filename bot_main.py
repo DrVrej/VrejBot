@@ -103,56 +103,55 @@ async def on_member_update(before, after):
 
 @bot.event
 async def on_message(message):
-	serverID = message.guild
-	m_org = message.content  # Unedited message
-	m = m_org  # Edited message
+	serverID = message.guild.id
+	content = message.content  # Unedited message
+	contentEdited = content  # Edited message
 	botTagged = False
 	# authorIsAdmin = vjf.IsAdmin(message.author)
 	getUserInfo = False  # For user info command
 
 	# Link hramaner:
-	mh = m_org.strip()  # Asiga minag hramaneroun hamar bidi kordzadzvi!
-	for v in message.mentions:  # Nayir amen martignere vor tag yegher en
-		mh = mh.replace(f"<@{v.id}>", "").strip()  # serpe martigneroon anoonere
-	if vjf.Match_Exact(mh, ["-help", "-h", "-?"]) == True:
+	mh = content.strip()  # Asiga minag hramaneroun hamar bidi kordzadzvi!
+	for v in message.mentions:  # Serpe martigneroon anoonere
+		mh = mh.replace(f"<@{v.id}>", "").strip()
+
+	# Help command
+	if vjf.Match_Exact(mh, ["-help", "-h", "-?"]):
 		if serverID == SERVER_VREJGAMING:
 			await message.channel.send("```ini\n[-sg | -steam] = Steam Group\n[-i | -invite] = Discord Server (Invite link)\n[-vjbase | -vjb | -vj] = VJ Base Workshop Page\n[-vjgit] = VJ Base GitHub Page\n[-hlr] = Half-Life Resurgence GitHub Page\n[-server | -sfiles] = DrVrej's Server Files\n[-im] = Broken / Incompatible Addons\n[-u | -user] = Returns the information of the given user(s)\n```")
 		else:
 			await message.channel.send("```ini\n[-u | -user] = Returns the information of the given user(s)\n```")
 		return
+
 	# VrejGaming commands
 	if serverID == SERVER_VREJGAMING:
 		# fmt: off
-		if vjf.Match_Exact(mh, ["-sg", "-steam"]) == True: await message.channel.send("Steam Group: https://steamcommunity.com/groups/vrejgaming"); return
-		if vjf.Match_Exact(mh, ["-i", "-invite"]) == True: await message.channel.send("Discord Invite: https://discordapp.com/invite/zwQjrdG"); return
-		if vjf.Match_Exact(mh, ["-vjbase", "-vjb", "-vj"]) == True: await message.channel.send("VJ Base Workshop Page: https://steamcommunity.com/sharedfiles/filedetails/?id=131759821"); return
-		if vjf.Match_Exact(mh, ["-vjgit"]) == True: await message.channel.send("VJ Base GitHub Page: https://github.com/DrVrej/VJ-Base"); return
-		if vjf.Match_Exact(mh, ["-server", "-sfiles"]) == True: await message.channel.send("DrVrej's Server Files: https://steamcommunity.com/sharedfiles/filedetails/?id=157267702"); return
-		if vjf.Match_Exact(mh, ["-im"]) == True: await message.channel.send("Broken / Incompatible Addons: https://steamcommunity.com/sharedfiles/filedetails/?id=1129493108"); return
-		if vjf.Match_Exact(mh, ["-hlr"]) == True: await message.channel.send("Half-Life Resurgence (Base): https://github.com/VJ-HLR-Developers/Half-Life-Resurgence"); return
+		if vjf.Match_Exact(mh, ["-sg", "-steam"]): await message.channel.send("Steam Group: https://steamcommunity.com/groups/vrejgaming"); return
+		if vjf.Match_Exact(mh, ["-i", "-invite"]): await message.channel.send("Discord Invite: https://discordapp.com/invite/zwQjrdG"); return
+		if vjf.Match_Exact(mh, ["-vjbase", "-vjb", "-vj"]): await message.channel.send("VJ Base Workshop Page: https://steamcommunity.com/sharedfiles/filedetails/?id=131759821"); return
+		if vjf.Match_Exact(mh, ["-vjgit"]): await message.channel.send("VJ Base GitHub Page: https://github.com/DrVrej/VJ-Base"); return
+		if vjf.Match_Exact(mh, ["-server", "-sfiles"]): await message.channel.send("DrVrej's Server Files: https://steamcommunity.com/sharedfiles/filedetails/?id=157267702"); return
+		if vjf.Match_Exact(mh, ["-im"]): await message.channel.send("Broken / Incompatible Addons: https://steamcommunity.com/sharedfiles/filedetails/?id=1129493108"); return
+		if vjf.Match_Exact(mh, ["-hlr"]): await message.channel.send("Half-Life Resurgence (Base): https://github.com/VJ-HLR-Developers/Half-Life-Resurgence"); return
 		# fmt: on
 
 	# Commands for all servers
-	if vjf.Match_Start(mh, ["-u", "-user"]) == True:
+	if vjf.Match_Start(mh, ["-u", "-user"]):
 		getUserInfo = True
 
 	for v in message.mentions:  # Nayir amen martignere vor tag yegher en
 		if v == bot.user:  # Yete robotne, gerna sharnagel
 			botTagged = True
-		if getUserInfo == True:
+		if getUserInfo:
 			await message.channel.send(":information_source: **MEMBER INFORMATION** [*" + vjf.Format_Time(datetime.datetime.now()) + "*]\n:busts_in_silhouette: `Name: " + str(v) + " [ID: " + str(v.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(v.created_at) + "`\n:iphone: `On Mobile: " + str(v.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(v.top_role) + "`\n:inbox_tray:`Join Date: " + vjf.Format_Time(v.joined_at) + "`")
-			# else: # Medzavor chene, ese martoun vor chi gernar as hramane sharnagel
-			# await message.channel.send("<@!" + str(message.author.id) + ">, you must be an administrator to use that command!");
-		m = m.replace("<@" + str(v.id) + ">", "").strip()  # serpe martigneroon anoonere
+		contentEdited = contentEdited.replace("<@" + str(v.id) + ">", "").strip()  # serpe martigneroon anoonere
 
 	# Sharnag e, minag yete as bot-e tag yegher e!
-	if botTagged == False:
+	if not botTagged:
 		return
 
-	logger.info("-----------------------------")
-	logger.info(f"Author: {message.author} [{vjf.Format_Time(message.created_at)}]")
-	logger.info(f"Message Arrived: {m}")  # Make sure it's a unrecognized letter
-	m = m.lower()
+	logger.info(f"messaged arrived : @{message.author} , #{message.channel} , {vjf.Format_Time(message.created_at)} , Content = {contentEdited}")
+	contentEdited = contentEdited.lower()
 
 	# Yete yes em, mi sharnager!
 	if message.author == bot.user:
@@ -162,42 +161,42 @@ async def on_message(message):
 	async def vj_PrintMessage(s):
 		await message.channel.send("<@!" + str(message.author.id) + "> " + s)
 
-	if m == "":
+	if contentEdited == "":
 		await vj_PrintMessage("You didn't type anything! :thinking: :angry:")
 		return
 
-	if vjf.Match_Start(m, ["hello", "hi", "greetings", "allo"]) == True:
+	if vjf.Match_Start(contentEdited, ["hello", "hi", "greetings", "allo"]):
 		await vj_PrintMessage(vjf.PickRandom(["Hello!", "Hi!", "Greetings!", "Allo!"]))
 		return
-	if vjf.Match_Start(m, ["how are you", "how you doing", "are you good"]) == True:
+	if vjf.Match_Start(contentEdited, ["how are you", "how you doing", "are you good"]):
 		await vj_PrintMessage(vjf.PickRandom(["I am good! You?", "I am doing great! how about you?", "Good, you?"]))
 		return
-	if vjf.Match_Start(m, ["are you a bot", "you are a bot", "you a bot"]) == True:
+	if vjf.Match_Start(contentEdited, ["are you a bot", "you are a bot", "you a bot"]):
 		await vj_PrintMessage(vjf.PickRandom(["I am a bot!", "I know I am a bot!", " I am robot!", "BEEP BOOP BEEP BOOP"]))
 		return
-	if vjf.Match_Start(m, ["talk to hgrunt"]) == True:
+	if vjf.Match_Start(contentEdited, ["talk to hgrunt"]):
 		await message.channel.send(vjf.PickRandom(["<@!396884008501510144> Hello!"]))
 		return
-	if vjf.Match_Any(m, ["who created you", "your owner", "your creator", "your author", "your dad", "your parents", "your father"]) == True:
+	if vjf.Match_Any(contentEdited, ["who created you", "your owner", "your creator", "your author", "your dad", "your parents", "your father"]):
 		await vj_PrintMessage("DrVrej created me!")
 		return
-	if vjf.Match_Any(m, ["your mother", "your mom", "who is your mom"]) == True:
+	if vjf.Match_Any(contentEdited, ["your mother", "your mom", "who is your mom"]):
 		await vj_PrintMessage("I don't have a mother!")
 		return
-	if vjf.Match_Any(m, ["<:hl3:562737648926457893>", "hl3", "half life 3"]) == True:
+	if vjf.Match_Any(contentEdited, ["<:hl3:562737648926457893>", "hl3", "half life 3"]):
 		await vj_PrintMessage(vjf.PickRandom(["In your dreams you will see <:hl3:562737648926457893>!", "Release date: December 29, 9999", "Never. :eye:"]))
 		return
-	if vjf.Match_Any(m, ["cookie", "\U0001f36a"]) == True:
+	if vjf.Match_Any(contentEdited, ["cookie", "\U0001f36a"]):
 		await vj_PrintMessage(":cookie:")
 		return
-	if vjf.Match_Any(m, ["armenia", "hayastan", "armo", "🇦🇲"]) == True:
+	if vjf.Match_Any(contentEdited, ["armenia", "hayastan", "armo", "🇦🇲"]):
 		await vj_PrintMessage("Long Live Armenia! :flag_am:")
 		return
-	if vjf.Match_Any(m, ["happy", "\U0001f600", "\U0001f603", "\U0001f604", "\U0001f601", "\U000fe332", "\U0001f60a", "\U0001f642", "\u263a", "\U0001f607", "\U0001f643"]) == True:
+	if vjf.Match_Any(contentEdited, ["happy", "\U0001f600", "\U0001f603", "\U0001f604", "\U0001f601", "\U000fe332", "\U0001f60a", "\U0001f642", "\u263a", "\U0001f607", "\U0001f643"]):
 		await vj_PrintMessage(vjf.PickRandom(["\U0001f600", "\U0001f603", "\U0001f604", "\U0001f601", "\U000fe332", "\U0001f60a", "\U0001f642", "\U000fe336", "\U0001f607", "\U0001f643"]))
 		return
 
-	if serverID == SERVER_VREJGAMING and vjf.Match_Any(m, ["tell me a fact", "fact", "say a fact", "tell a fact", "say fact", "tell fact", "fun fact"]) == True:
+	if serverID == SERVER_VREJGAMING and vjf.Match_Any(contentEdited, ["tell me a fact", "fact", "say a fact", "tell a fact", "say fact", "tell fact", "fun fact"]):
 		await vj_PrintMessage("Fun Fact! " + vjf.PickRandom(["Armenia is the first Christian nation!", "VJ Base stands for Vrej Base.", "VrejGaming was originally made on May 8th, 2011!", "VJ Base was originally created during Garry's Mod 12!", "Armenia's anthem is 'Mer Hayrenik', which stands for 'Our Fatherland'", "Armenia is one of the 10 ancient nations that still exists!", "Vrej in Armenian means Vengeance or Revenge.", "Armenian language has its own unique alphabet. grammar and sentence system!", "VJ Base 2.0 was released on January 1, 2015!", "VJ Base was the first addon for Garry's Mod to bring extensive customization. Soon after release, many addons began to follow the idea of customization.", "Half-Life Resurgence is the largest SNPC pack made by DrVrej!"]))
 		return
 
