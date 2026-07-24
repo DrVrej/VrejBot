@@ -1,7 +1,6 @@
 import datetime
 import logging
 import os
-import sys
 
 import discord
 import bot_funcs as vjf
@@ -16,7 +15,7 @@ import bot_funcs as vjf
 ###########################
 
 bot = discord.Client(intents=discord.Intents.all())  # A factory method that creates a Intents with everything enabled
-logger = logging.getLogger("vrejbot")
+logger = logging.getLogger("vrejbot")  # Sets up Discord logging, source: https://github.com/Rapptz/discord.py/blob/master/discord/utils.py#L1305
 
 ########## Server IDs ##########
 SERVER_VREJGAMING = 390951701655584778
@@ -39,25 +38,37 @@ idRole_Member = {
 }
 
 
+# ANSI style codes for terminal
+class STYLE:
+	RESET = "\x1b[0m"
+	SERVER_NAME = "\x1b[3;38;5;117m"
+	DISCORD_DEBUG = "\x1b[40;1m"
+	DISCORD_INFO = "\x1b[34;1m"
+	DISCORD_WARNING = "\x1b[33;1m"
+	DISCORD_ERROR = "\x1b[31m"
+	DISCORD_CRITICAL = "\x1b[41m"
+
+
 # Update the stats channel if the server has one!
-async def vjUpdateStats(g):
-	serverID = g.id
-	numEveryone = len(g.members)
-	numBots = len(vjf.GetBots(g.members))
+async def vjUpdateStats(guild):
+	serverID = guild.id
+	numEveryone = len(guild.members)
+	numBots = len(vjf.GetBots(guild.members))
 	if serverID in idChannel_Stats:  # Make sure the key exists in the dictionary before attempting to look it up!
-		statChan = vjf.GetChannel(g.channels, discord.ChannelType.voice, idChannel_Stats[serverID])
+		statChan = vjf.GetChannel(guild.channels, discord.ChannelType.voice, idChannel_Stats[serverID])
 		if statChan != None:  # If this server has a stat channel...
+			logger.info(f"{STYLE.SERVER_NAME}{guild.name}{STYLE.RESET} : Updating server stats with {numEveryone} members")
 			textStat = "Unknown Stats!"
 			if serverID == SERVER_VREJGAMING:
 				# Everyone,     Verified,     (Everyone - bots - members - quarantine - verified),     Bots
-				textStat = f"👥{numEveryone} 📦{len(vjf.GetRank(g.members, 979356390474780672))} 🚪{numEveryone - numBots - len(vjf.GetRank(g.members, idRole_Member[serverID])) - len(vjf.GetRank(g.members, 463809123427811328)) - len(vjf.GetRank(g.members, 979356390474780672))} 🤖{numBots}"
+				textStat = f"👥{numEveryone} 📦{len(vjf.GetRank(guild.members, 979356390474780672))} 🚪{numEveryone - numBots - len(vjf.GetRank(guild.members, idRole_Member[serverID])) - len(vjf.GetRank(guild.members, 463809123427811328)) - len(vjf.GetRank(guild.members, 979356390474780672))} 🤖{numBots}"
 			elif serverID == SERVER_PORTS:
 				# Everyone,     (Everyone - bots - members),     Bots
-				textStat = f"👥{numEveryone} 🚪{numEveryone - numBots - len(vjf.GetRank(g.members, idRole_Member[serverID]))} 🤖{numBots}"
+				textStat = f"👥{numEveryone} 🚪{numEveryone - numBots - len(vjf.GetRank(guild.members, idRole_Member[serverID]))} 🤖{numBots}"
 			try:
-				await statChan.edit(name=textStat, reason="Updating server stats...")
+				await statChan.edit(name=textStat, reason="Updating server stats")
 			except discord.HTTPException as err:
-				print("Error updating stats! (HTTPException)!", err)
+				logger.error(f"Error updating stats! (HTTPException)! {err}")
 
 
 @bot.event
