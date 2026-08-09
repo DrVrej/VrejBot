@@ -215,10 +215,8 @@ async def on_message(message):
 	await vj_PrintMessage(vjf.PickRandom(["ENT.Zombie = true", "Yes you are!", "No you!", "Tell me more!", "Okay?", "Cool story!", "Understandable, have a nice day!", "You wot m8?!", "I was in the chest club.", "If you say so!", "I like trains.", "If you say so...", "I agree.", "I disagree."]))
 
 
-kakhni_tive = None
-try:
-	os.environ["KAKHNI_TIVE"]
-	kakhni_tive = os.environ["KAKHNI_TIVE"]
-except:
-	kakhni_tive = open("kakhni_tive.txt").readline()
+kakhni_tive = os.getenv("KAKHNI_TIVE")
+if not kakhni_tive:
+	with open("kakhni_tive.txt") as file:
+		kakhni_tive = file.readline().strip()
 bot.run(kakhni_tive, root_logger=True)
