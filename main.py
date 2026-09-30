@@ -3,11 +3,12 @@ import logging
 import os
 
 import discord
-import bot_funcs as vjf
+import src.funcs as vjf
+from src.enums import ID, STYLE
 
 ########## Notes ##########
 # discord.py docs = https://discordpy.readthedocs.io/en/latest/api.html
-# Manual run = python bot_main.py
+# Manual run = python main.py
 #
 # Check for outdated packages = pip list --outdated
 # Update all packages = pip freeze | %{$_.split('==')[0]} | %{pip install --upgrade $_}
@@ -17,58 +18,29 @@ import bot_funcs as vjf
 bot = discord.Client(intents=discord.Intents.all())  # A factory method that creates a Intents with everything enabled
 logger = logging.getLogger("vrejbot")  # Sets up Discord logging, source: https://github.com/Rapptz/discord.py/blob/master/discord/utils.py#L1305
 
-########## Server IDs ##########
-SERVER_VREJGAMING = 390951701655584778
-SERVER_PORTS = 563046572191907905
-
-########## Channel IDs ##########
-idChannel_Stats = {
-	SERVER_VREJGAMING: 562276245174485002,
-	SERVER_PORTS: 630267198635638786,
-}
-idChannel_Log = {
-	SERVER_VREJGAMING: 391189293965508608,
-	SERVER_PORTS: 564176507044364289,
-}
-
-########## Role IDs ##########
-idRole_Member = {
-	SERVER_VREJGAMING: 390961994645241871,
-	SERVER_PORTS: 1011456428046827602,
-}
-
-
-# ANSI style codes for terminal
-class STYLE:
-	RESET = "\x1b[0m"
-	SERVER_NAME = "\x1b[3;38;5;117m"
-	DISCORD_DEBUG = "\x1b[40;1m"
-	DISCORD_INFO = "\x1b[34;1m"
-	DISCORD_WARNING = "\x1b[33;1m"
-	DISCORD_ERROR = "\x1b[31m"
-	DISCORD_CRITICAL = "\x1b[41m"
-
 
 # Update the stats channel if the server has one!
 async def vjUpdateStats(guild):
 	serverID = guild.id
+	serverIDs = ID[serverID]
+	if not serverIDs:
+		return
 	numEveryone = len(guild.members)
 	numBots = len(vjf.GetBots(guild.members))
-	if serverID in idChannel_Stats:  # Make sure the key exists in the dictionary before attempting to look it up!
-		statChan = vjf.GetChannel(guild.channels, discord.ChannelType.voice, idChannel_Stats[serverID])
-		if statChan != None:  # If this server has a stat channel...
-			logger.info(f"{STYLE.SERVER_NAME}{guild.name}{STYLE.RESET} : Updating server stats with {numEveryone} members")
-			textStat = "Unknown Stats!"
-			if serverID == SERVER_VREJGAMING:
-				# Everyone,     Verified,     (Everyone - bots - members - quarantine - verified),     Bots
-				textStat = f"👥{numEveryone} 📦{len(vjf.GetRank(guild.members, 979356390474780672))} 🚪{numEveryone - numBots - len(vjf.GetRank(guild.members, idRole_Member[serverID])) - len(vjf.GetRank(guild.members, 463809123427811328)) - len(vjf.GetRank(guild.members, 979356390474780672))} 🤖{numBots}"
-			elif serverID == SERVER_PORTS:
-				# Everyone,     (Everyone - bots - members),     Bots
-				textStat = f"👥{numEveryone} 🚪{numEveryone - numBots - len(vjf.GetRank(guild.members, idRole_Member[serverID]))} 🤖{numBots}"
-			try:
-				await statChan.edit(name=textStat, reason="Updating server stats")
-			except discord.HTTPException as err:
-				logger.error(f"Error updating stats! (HTTPException)! {err}")
+	statChan = vjf.GetChannel(guild.channels, discord.ChannelType.voice, serverIDs.CHAN_STATS)
+	if statChan != None:  # If this server has a stat channel...
+		logger.info(f"{STYLE.SERVER_NAME}{guild.name}{STYLE.RESET} : Updating server stats with {numEveryone} members")
+		textStat = "Unknown Stats!"
+		if serverID == ID.VREJGAMING.SERVER:
+			# Everyone,     Verified,     (Everyone - bots - members - quarantine - verified),     Bots
+			textStat = f"👥{numEveryone} 📦{len(vjf.GetRank(guild.members, 979356390474780672))} 🚪{numEveryone - numBots - len(vjf.GetRank(guild.members, serverIDs.ROLE_MEMBER)) - len(vjf.GetRank(guild.members, 463809123427811328)) - len(vjf.GetRank(guild.members, 979356390474780672))} 🤖{numBots}"
+		elif serverID == ID.PORTS.SERVER:
+			# Everyone,     (Everyone - bots - members),     Bots
+			textStat = f"👥{numEveryone} 🚪{numEveryone - numBots - len(vjf.GetRank(guild.members, serverIDs.ROLE_MEMBER))} 🤖{numBots}"
+		try:
+			await statChan.edit(name=textStat, reason="Updating server stats")
+		except discord.HTTPException as err:
+			logger.error(f"Error updating stats! (HTTPException)! {err}")
 
 
 @bot.event
@@ -89,7 +61,7 @@ async def on_ready():
 @bot.event
 async def on_member_join(member):
 	curGuild = member.guild
-	logChan = vjf.GetChannel(curGuild.channels, discord.ChannelType.text, idChannel_Log[curGuild.id])
+	logChan = vjf.GetChannel(curGuild.channels, discord.ChannelType.text, ID[curGuild.id].CHAN_LOG)
 	if logChan != None:  # If this server has a log channel...
 		await logChan.send(":inbox_tray: **MEMBER JOINED** [*" + vjf.Format_Time(member.joined_at) + "*]\n:busts_in_silhouette: `Name: " + str(member) + " [ID: " + str(member.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(member.created_at) + "`\n:iphone: `On Mobile: " + str(member.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(member.top_role) + "`")
 	await vjUpdateStats(curGuild)
@@ -98,7 +70,7 @@ async def on_member_join(member):
 @bot.event
 async def on_member_remove(member):
 	curGuild = member.guild
-	logChan = vjf.GetChannel(curGuild.channels, discord.ChannelType.text, idChannel_Log[curGuild.id])
+	logChan = vjf.GetChannel(curGuild.channels, discord.ChannelType.text, ID[curGuild.id].CHAN_LOG)
 	if logChan != None:  # If this server has a log channel...
 		await logChan.send(":outbox_tray: **MEMBER LEFT** [*" + vjf.Format_Time(datetime.datetime.now()) + "*]\n:busts_in_silhouette: `Name: " + str(member) + " [ID: " + str(member.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(member.created_at) + "`\n:iphone: `On Mobile: " + str(member.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(member.top_role) + "`\n:inbox_tray:`Join Date: " + vjf.Format_Time(member.joined_at) + "`")
 	await vjUpdateStats(curGuild)
@@ -128,14 +100,14 @@ async def on_message(message):
 
 	# Help command
 	if vjf.Match_Exact(mh, ["-help", "-h", "-?"]):
-		if serverID == SERVER_VREJGAMING:
+		if serverID == ID.VREJGAMING.SERVER:
 			await message.channel.send("```ini\n[-sg | -steam] = Steam Group\n[-i | -invite] = Discord Server (Invite link)\n[-vjbase | -vjb | -vj] = VJ Base Workshop Page\n[-vjgit] = VJ Base GitHub Page\n[-hlr] = Half-Life Resurgence GitHub Page\n[-server | -sfiles] = DrVrej's Server Files\n[-im] = Broken / Incompatible Addons\n[-u | -user] = Returns the information of the given user(s)\n```")
 		else:
 			await message.channel.send("```ini\n[-u | -user] = Returns the information of the given user(s)\n```")
 		return
 
 	# VrejGaming commands
-	if serverID == SERVER_VREJGAMING:
+	if serverID == ID.VREJGAMING.SERVER:
 		# fmt: off
 		if vjf.Match_Exact(mh, ["-sg", "-steam"]): await message.channel.send("Steam Group: https://steamcommunity.com/groups/vrejgaming"); return
 		if vjf.Match_Exact(mh, ["-i", "-invite"]): await message.channel.send("Discord Invite: https://discordapp.com/invite/zwQjrdG"); return
@@ -161,7 +133,7 @@ async def on_message(message):
 	if not botTagged:
 		return
 
-	logger.info(f"messaged arrived : @{message.author} , #{message.channel} , {vjf.Format_Time(message.created_at)} , Content = {contentEdited}")
+	logger.info(f"{STYLE.SERVER_NAME}{message.guild.name}{STYLE.RESET} message arrived : @{message.author} , #{message.channel} , {vjf.Format_Time(message.created_at)} , Content = {contentEdited}")
 	contentEdited = contentEdited.lower()
 
 	# Yete yes em, mi sharnager!
@@ -207,11 +179,11 @@ async def on_message(message):
 		await vj_PrintMessage(vjf.PickRandom(["\U0001f600", "\U0001f603", "\U0001f604", "\U0001f601", "\U000fe332", "\U0001f60a", "\U0001f642", "\U000fe336", "\U0001f607", "\U0001f643"]))
 		return
 
-	if serverID == SERVER_VREJGAMING and vjf.Match_Any(contentEdited, ["tell me a fact", "fact", "say a fact", "tell a fact", "say fact", "tell fact", "fun fact"]):
+	if serverID == ID.VREJGAMING.SERVER and vjf.Match_Any(contentEdited, ["tell me a fact", "fact", "say a fact", "tell a fact", "say fact", "tell fact", "fun fact"]):
 		await vj_PrintMessage("Fun Fact! " + vjf.PickRandom(["Armenia is the first Christian nation!", "VJ Base stands for Vrej Base.", "VrejGaming was originally made on May 8th, 2011!", "VJ Base was originally created during Garry's Mod 12!", "Armenia's anthem is 'Mer Hayrenik', which stands for 'Our Fatherland'", "Armenia is one of the 10 ancient nations that still exists!", "Vrej in Armenian means Vengeance or Revenge.", "Armenian language has its own unique alphabet. grammar and sentence system!", "VJ Base 2.0 was released on January 1, 2015!", "VJ Base was the first addon for Garry's Mod to bring extensive customization. Soon after release, many addons began to follow the idea of customization.", "Half-Life Resurgence is the largest SNPC pack made by DrVrej!"]))
 		return
 
-	# Yete pame chi hasgena:	  "I don't recognize your message! Sorry :frowning:"
+	# Yete pame chi hasgena:
 	await vj_PrintMessage(vjf.PickRandom(["ENT.Zombie = true", "Yes you are!", "No you!", "Tell me more!", "Okay?", "Cool story!", "Understandable, have a nice day!", "You wot m8?!", "I was in the chest club.", "If you say so!", "I like trains.", "If you say so...", "I agree.", "I disagree."]))
 
 
