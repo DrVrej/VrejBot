@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import logging
 import os
 
@@ -72,7 +72,7 @@ async def on_member_remove(member):
 	curGuild = member.guild
 	logChan = vjf.GetChannel(curGuild.channels, discord.ChannelType.text, ID[curGuild.id].CHAN_LOG)
 	if logChan != None:  # If this server has a log channel...
-		await logChan.send(":outbox_tray: **MEMBER LEFT** [*" + vjf.Format_Time(datetime.datetime.now()) + "*]\n:busts_in_silhouette: `Name: " + str(member) + " [ID: " + str(member.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(member.created_at) + "`\n:iphone: `On Mobile: " + str(member.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(member.top_role) + "`\n:inbox_tray:`Join Date: " + vjf.Format_Time(member.joined_at) + "`")
+		await logChan.send(":outbox_tray: **MEMBER LEFT** [*" + vjf.Format_Time(dt.datetime.now()) + "*]\n:busts_in_silhouette: `Name: " + str(member) + " [ID: " + str(member.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(member.created_at) + "`\n:iphone: `On Mobile: " + str(member.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(member.top_role) + "`\n:inbox_tray:`Join Date: " + vjf.Format_Time(member.joined_at) + "`")
 	await vjUpdateStats(curGuild)
 
 
@@ -126,7 +126,7 @@ async def on_message(message):
 		if v == bot.user:  # Yete robotne, gerna sharnagel
 			botTagged = True
 		if getUserInfo:
-			await message.channel.send(":information_source: **MEMBER INFORMATION** [*" + vjf.Format_Time(datetime.datetime.now()) + "*]\n:busts_in_silhouette: `Name: " + str(v) + " [ID: " + str(v.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(v.created_at) + "`\n:iphone: `On Mobile: " + str(v.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(v.top_role) + "`\n:inbox_tray:`Join Date: " + vjf.Format_Time(v.joined_at) + "`")
+			await message.channel.send(":information_source: **MEMBER INFORMATION** [*" + vjf.Format_Time(dt.datetime.now()) + "*]\n:busts_in_silhouette: `Name: " + str(v) + " [ID: " + str(v.id) + "]`\n:tools: `Account Created: " + vjf.Format_Time(v.created_at) + "`\n:iphone: `On Mobile: " + str(v.is_on_mobile()) + "`\n:trophy: `Highest Rank: " + str(v.top_role) + "`\n:inbox_tray:`Join Date: " + vjf.Format_Time(v.joined_at) + "`")
 		contentEdited = contentEdited.replace("<@" + str(v.id) + ">", "").strip()  # serpe martigneroon anoonere
 
 	# Sharnag e, minag yete as bot-e tag yegher e!
